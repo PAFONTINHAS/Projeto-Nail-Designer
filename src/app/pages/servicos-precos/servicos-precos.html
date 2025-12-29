@@ -1,0 +1,55 @@
+<main>
+
+    <div class="container">
+        <div class="titulo">
+            <h1>Serviços e Preços</h1>
+            <p>Especializada em alongamento de unhas com as melhores técnicas do <br> mercado</p>
+        </div>
+
+        <div class="cards">
+
+            @for(card of cards; track $index){
+
+                <div class="card">
+                    <div class="titulo-card">
+                        <div class="icone">
+                            <i-lucide [img]="card.icone" class="my-icon" color="#ec489a"></i-lucide>
+                        </div>
+    
+                        <div class="descricao">
+                            <p>{{card.descricao}}</p>
+                            <p class="sub-desc">{{card.subDescricao}}</p>
+                        </div>
+                    </div>
+
+                    <div class="servicos">
+
+                        @for (servico of card.servicos; track $index) {
+                            <div class="servico">
+                                <span class="nome-servico">{{servico.servico}}</span>
+                                <span class="preco-servico">{{servico.preco}}</span>
+                            </div>
+                        }
+
+                        
+                    </div>
+
+                    @if(card.descricao === "Manutenções"){
+
+                        <div class="info">
+                            <h3>Importante</h3>
+                            <p>Para manutenções após 30 dias, será cobrado o valor de uma colocação. Vide seção de 'Alongamento de Unhas'</p>
+                        </div>
+                    }
+                </div>
+            }
+
+
+        </div>
+
+
+    </div>
+
+
+
+</main>
