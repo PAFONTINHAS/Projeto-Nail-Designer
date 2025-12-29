@@ -1,0 +1,73 @@
+main{
+    display: flex;
+    width: 100%;
+    height: auto;
+    background-color: black;
+}
+
+.content{
+    width: 100%;
+    height: 600px;
+    /* background-image: url("../../../assets/img/imagemFundo.jpeg"); */
+    color: black;
+}
+
+.text-container{
+
+    height: 100%;
+    display: flex;
+    margin-top: 87.2px;
+    margin-left: 20px;
+    align-items: center;
+
+
+}
+
+.texto{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.botoes{
+    margin-top: 20px;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+
+.agendar, .servicos{
+    font-style: 'Montserrat';
+    padding: 10px;
+    border-radius: 15px;
+    border: none;
+    background-color: white;
+    margin: 10px;
+    font-size: 1.1rem;
+
+}
+
+.agendar{
+    background-color: #ec4899;
+    color: white;
+}
+
+.servicos{
+    background-color: #6A7BFF;
+    color: white;
+}
+
+.agendar:hover{
+    background-color: #be3e7e;
+    transition: 0.7s;
+}
+
+.servicos:hover{
+    background-color: #4653b4;
+    transition: 0.7s;
+
+}

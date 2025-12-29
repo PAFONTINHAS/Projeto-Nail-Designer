@@ -1,1 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400; /* Peso regular */
+  font-display: swap; /* Evita texto invisível enquanto a fonte carrega */
+  src: url('./assets/fonts/montserrat-v26-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500; /* Peso médio */
+  font-display: swap;
+  src: url('./assets/fonts/montserrat-v26-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700; /* Peso negrito */
+  font-display: swap;
+  src: url('./assets/fonts/montserrat-v26-latin-700.woff2') format('woff2');
+}
+
+*{
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+}
+
+html{
+  scroll-behavior: smooth;
+}
+::-webkit-scrollbar {
+    width: 12px; /* Largura da barra de rolagem vertical */
+    height: 12px; /* Altura da barra de rolagem horizontal */
+}
+
+::-webkit-scrollbar-track {
+    background: white;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #63A748; /* Cinza com 80% de opacidade */
+    border-radius: 6px; /* Bordas arredondadas */
+    border: 3px solid transparent; /* Bordas transparentes para criar espaço entre o thumb e o track */
+    background-clip: padding-box; /* Faz com que a cor de fundo não cubra as bordas transparentes */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #528b3b; /* Mais escuro com 80% de opacidade */
+}

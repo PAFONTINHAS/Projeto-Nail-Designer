@@ -1,0 +1,41 @@
+.navbar{
+    position: fixed;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.titulo{
+    align-items: center;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.menu{
+    gap: 20px;
+    display: flex;
+    padding-right: 20px;
+    list-style: none;
+}
+
+.menu-link {
+    text-decoration: none;
+    color: black;
+    font-size: 1.1rem;
+}
+
+
+.botao-agendar{
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: #ec4899;
+
+}
