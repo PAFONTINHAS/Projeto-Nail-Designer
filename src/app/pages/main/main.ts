@@ -4,10 +4,11 @@ import { Banner } from "../banner/banner";
 import { ServicosPrecos } from "../servicos-precos/servicos-precos";
 import { Agendamentos } from "../agendamentos/agendamentos";
 import { Contato } from "../contato/contato";
+import { Footer } from "../footer/footer";
 
 @Component({
   selector: 'app-main',
-  imports: [Header, Banner, ServicosPrecos, Agendamentos, Contato],
+  imports: [Header, Banner, ServicosPrecos, Agendamentos, Contato, Footer],
   templateUrl: './main.html',
   styleUrl: './main.css',
 })

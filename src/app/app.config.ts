@@ -9,6 +9,8 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { routes } from './app.routes';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { Component } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 
 registerLocaleData(localePt);
 export const appConfig: ApplicationConfig = {

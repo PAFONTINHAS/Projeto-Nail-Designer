@@ -7,7 +7,6 @@
     align-items: center;
     width: 100%;
     padding: 10px;
-    font-size: 1rem;
     z-index: 2;
     box-shadow: 1px 0.2px 0.5px 0.1px black;
 }
@@ -15,7 +14,7 @@
 .titulo{
     align-items: center;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .menu{
@@ -28,7 +27,7 @@
 .menu-link {
     text-decoration: none;
     color: black;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 
 
