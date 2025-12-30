@@ -20,7 +20,7 @@
 
 .main-content {
     display: flex;
-    align-self: flex-start;
+    align-self: center;
     flex-direction: column;
     padding-left: 50px;
     width: 90%;
