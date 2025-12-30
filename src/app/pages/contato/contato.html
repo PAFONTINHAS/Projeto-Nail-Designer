@@ -1,0 +1,25 @@
+<main>
+    <div class="container">
+
+        <div class="main-content">
+
+            @for(card of cards; track $index){
+    
+                <div class="card">
+    
+                    <i-lucide [img]="card.icon" class="my-icon" color="#d61a8e"></i-lucide>
+    
+                    <div class="conteudo">
+                        <div class="titulo">
+                            {{card.text}}
+                        </div>
+                        <div class="subtitulo">
+                            {{card.subText}}
+                        </div>
+                    </div>
+                    
+                </div>
+            }
+        </div>
+    </div>
+</main>
