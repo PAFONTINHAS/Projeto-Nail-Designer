@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { Header } from "../header/header";
 import { Banner } from "../banner/banner";
 import { ServicosPrecos } from "../servicos-precos/servicos-precos";
+import { Agendamentos } from "../agendamentos/agendamentos";
 
 @Component({
   selector: 'app-main',
-  imports: [Header, Banner, ServicosPrecos],
+  imports: [Header, Banner, ServicosPrecos, Agendamentos],
   templateUrl: './main.html',
   styleUrl: './main.css',
 })

@@ -1,0 +1,201 @@
+.container {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 30px;
+    background-color: rgb(241, 241, 241);
+    margin-bottom: 10px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.main-content {
+    display: flex;
+    align-self: flex-start;
+    flex-direction: column;
+    padding-left: 50px;
+    width: 90%;
+    gap: 50px;
+}
+
+.titulo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    font-size: 1.2rem;
+}
+
+
+.lembrete {
+    display: flex;
+    width: 100%;
+    background-color: #ec489a3a;
+    gap: 10px;
+    align-self: flex-start;
+    margin-top: 50px;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 0.8rem;
+}
+
+.agendamento-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.servicos-grid,
+.calendario-coluna,
+.horarios-coluna {
+    flex: 1;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    min-height: 500px;
+}
+
+.horarios-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.horarios-grid button {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}
+
+.titulo-servico {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.etapa {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.numero {
+    padding: 1px 5px 1px 5px;
+    border-radius: 50%;
+    background-color: #ec489a;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+.selecao p {
+    color: rgba(0, 0, 0, 0.411);
+    font-size: 0.9rem;
+}
+
+.servico-categorias {
+    display: flex;
+    margin-top: 10px;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.servico-categorias p {
+    border: 1px solid #ddd;
+    padding: 7px;
+    border-radius: 7px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.categoria-selecionada {
+    background-color: #ec489a;
+    color: white;
+
+}
+
+.card-servico {
+    display: flex;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.info {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    font-size: 0.8rem;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.card-servico:hover {
+    border: 1px solid #ec489a;
+
+}
+
+.selecionado {
+    background-color: #ec489a3a;
+
+}
+
+.hora-selecionada {
+    color: white;
+    font-weight: bold;
+    background-color: #ec489a !important;
+
+}
+
+.selecionado h4 {
+    color: #ec489a;
+
+}
+
+.relogio {
+    width: 10px;
+    height: 1px;
+}
+
+.info-servico {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 0.7rem;
+}
+
+
+.resumo-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.resumo-footer p {
+    margin-top: 5px;
+}
+
+.calendario-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    max-width: 300px;
+    margin: 0 auto;
+}
