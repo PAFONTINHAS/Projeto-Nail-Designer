@@ -24,9 +24,10 @@
                     <div class="servicos">
 
                         @for (servico of card.servicos; track $index) {
+
                             <div class="servico">
-                                <span class="nome-servico">{{servico.servico}}</span>
-                                <span class="preco-servico">{{servico.preco}}</span>
+                                <span class="nome-servico">{{servico.nome}}</span>
+                                <span class="preco-servico">R$ {{servico.preco}},00</span>
                             </div>
                         }
 

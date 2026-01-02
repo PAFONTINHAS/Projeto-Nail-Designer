@@ -1,25 +1,21 @@
 main{
     display: flex;
     width: 100%;
-    height: auto;
     background-color: black;
 }
 
+
 .content{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
     width: 100%;
     height: 600px;
-    /* background-image: url("../../../assets/img/imagemFundo.jpeg"); */
+    margin-top: 60px;
     color: black;
-}
-
-.text-container{
-
-    height: 100%;
-    display: flex;
-    margin-top: 87.2px;
-    margin-left: 20px;
-    align-items: center;
-
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url("../../../assets/img/banner.jpeg");
 
 }
 
@@ -27,9 +23,20 @@ main{
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 10px;
+    gap: 30px;
     font-size: 1.2rem;
     color: white;
+    padding: 25px;
+    background-color: rgba(0, 0, 0, 0.411);
+    border-radius: 20px;
+    max-width: 640px;
+    margin-bottom: 30px;
+    margin-left: 20px;
+}
+
+
+.titulo-alongamento{
+    line-height: 1.2;
 }
 
 .botoes{

@@ -36,9 +36,9 @@
                         </div>
     
                         <div class="servico-categorias">
-                            <p [class.categoria-selecionada]="isCategoriaSelecionada('Alongamento')" (click)="toggleCategoria('Alongamento')"> Alongamento</p>
-                            <p [class.categoria-selecionada]="isCategoriaSelecionada('Manutencao')" (click)="toggleCategoria('Manutencao')">Manutenção</p>
-                            <p [class.categoria-selecionada]="isCategoriaSelecionada('Extras')" (click)="toggleCategoria('Extras')">Extras</p>
+                            <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Alongamento')" (click)="toggleCategoria('Alongamento')"> Alongamento</p>
+                            <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Manutencao')"  (click)="toggleCategoria('Manutencao')">Manutenção</p>
+                            <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Extras')"      (click)="toggleCategoria('Extras')">Extras</p>
                         </div>
                         @for (servico of servicosDisponiveis; track $index) {
     
@@ -50,7 +50,7 @@
                                     </div>
                                     <div class="info-servico">
                                         <span><i-lucide [img]="Clock" class="relogio" color="black" [size]="11.2"></i-lucide> {{servico.duracao}} min</span>
-                                        <span>R${{servico.preco}}</span>
+                                        <span>R$ {{servico.preco}},00</span>
                                     </div>
                                 </div>
     
@@ -67,7 +67,7 @@
                                 <br>
                                 <p>Total de serviços: {{servicosSelecionados.length}}</p>
                                 <p>Duração Estimada: {{totalDuracao}} min</p>
-                                <p class="valor-total">Valor Total: R${{totalPreco}}</p>
+                                <p class="valor-total">Valor Total: R$ {{totalPreco}},00</p>
                             </div>
                         }
                     </div>
