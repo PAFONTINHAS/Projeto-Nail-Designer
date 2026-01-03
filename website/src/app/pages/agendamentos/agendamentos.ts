@@ -256,12 +256,6 @@ export class Agendamentos implements OnInit {
     );
   }
 
-  get totalValor() {
-    return this.servicosSelecionados.reduce(
-      (total, servico) => total + servico.preco,
-      0
-    );
-  }
 
   filtroDeDatas = (d: Date | null): boolean => {
     const day = (d || new Date()).getDay();
