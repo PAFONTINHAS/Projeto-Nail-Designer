@@ -15,7 +15,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
     gap: 50px;
 }
 .card{
@@ -37,4 +36,11 @@
     color: rgba(0, 0, 0, 0.493);
     margin-top: 5px;
     font-size: 0.8rem;
+}
+
+@media(max-width: 850px){
+
+    .main-content{
+        flex-direction: column;
+    }
 }

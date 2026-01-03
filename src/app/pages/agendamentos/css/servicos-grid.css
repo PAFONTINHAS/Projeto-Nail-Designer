@@ -1,0 +1,55 @@
+.servico-categorias {
+    display: flex;
+    margin-top: 10px;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+
+
+.lista-servicos{
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    gap: 10px;
+}
+
+
+.selecionado {
+    background-color: #ec489a3a;
+
+}
+
+
+.selecionado h4 {
+    color: #ec489a;
+
+}
+
+.relogio {
+    width: 10px;
+    height: 1px;
+}
+
+.resumo-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.resumo-footer p {
+    margin-top: 5px;
+}
+
+.info-servico {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 0.7rem;
+}
+
+

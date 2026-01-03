@@ -1,0 +1,20 @@
+@media (max-width: 850px){
+
+    #agendamento-container{
+        scroll-margin-top: 80px;
+    }
+
+    .titulo h1{
+        font-size: 1.5rem;
+    }
+
+    .lembrete h3{
+        font-size: 0.8rem;
+    }
+
+    .lembrete p {
+        font-size: .7rem;
+        width: 100%;
+    }
+
+}

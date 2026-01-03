@@ -22,7 +22,6 @@
     display: flex;
     align-self: center;
     flex-direction: column;
-    padding-left: 50px;
     width: 90%;
     gap: 50px;
 }
@@ -60,7 +59,8 @@
 
 .servicos-grid,
 .calendario-coluna,
-.horarios-coluna {
+.horarios-coluna,
+.dados-cliente {
     flex: 1;
     flex-direction: column;
     background-color: white;
@@ -68,21 +68,6 @@
     padding: 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     min-height: 500px;
-}
-
-.horarios-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.horarios-grid button {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: white;
-    cursor: pointer;
 }
 
 .titulo-servico {
@@ -97,6 +82,8 @@
     gap: 10px;
 }
 
+
+
 .numero {
     padding: 1px 5px 1px 5px;
     border-radius: 50%;
@@ -108,13 +95,6 @@
 .selecao p {
     color: rgba(0, 0, 0, 0.411);
     font-size: 0.9rem;
-}
-
-.servico-categorias {
-    display: flex;
-    margin-top: 10px;
-    gap: 10px;
-    margin-bottom: 20px;
 }
 
 .servico-categorias p {
@@ -133,7 +113,6 @@
 
 .card-servico {
     display: flex;
-    margin-top: 15px;
     border: 1px solid #ddd;
     border-radius: 10px;
 }
@@ -152,51 +131,30 @@
 
 }
 
-.selecionado {
-    background-color: #ec489a3a;
 
-}
-
-.hora-selecionada {
+/* Botão de Finalização */
+.btn-finalizar, .btn-prosseguir {
+    margin-top: 10px;
+    background-color: #ec489a;
     color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
     font-weight: bold;
-    background-color: #ec489a !important;
-
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-.selecionado h4 {
-    color: #ec489a;
-
-}
-
-.relogio {
-    width: 10px;
-    height: 1px;
-}
-
-.info-servico {
+.btn-prosseguir{
     display: flex;
-    align-items: center;
-    gap: 30px;
-    font-size: 0.7rem;
+    padding: 10px;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+.btn-finalizar:hover, .btn-prosseguir:hover {
+    background-color: #d13684;
+    transition: 0.7s;
 }
 
 
-.resumo-footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
-.resumo-footer p {
-    margin-top: 5px;
-}
-
-.calendario-card {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    max-width: 300px;
-    margin: 0 auto;
-}

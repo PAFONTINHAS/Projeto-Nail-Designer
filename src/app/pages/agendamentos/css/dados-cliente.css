@@ -1,0 +1,108 @@
+.dados-cliente{
+    background: white;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    padding: 25px;
+    gap: 20px;
+}
+
+
+
+.secao-titulo {
+    color: #333;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #fce7f3;
+    padding-bottom: 10px;
+}
+
+/* Cards de Resumo */
+.dados-agendamento {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card-resumo {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.label-grupo {
+    font-weight: bold;
+    color: #ec489a;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+/* Itens de Serviço */
+.servico-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.nome-serv {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.detalhe-serv {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.fatura {
+    margin-top: 15px;
+    text-align: right;
+    color: #333;
+}
+
+/* Formulário e Inputs */
+.formulario-cliente {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.input-group input {
+    padding: 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: #ec489a;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px #ec489a1a;
+}
+
+
+/* Responsividade para telas pequenas */
+@media (max-width: 768px) {
+    .dados-agendamento {
+        grid-template-columns: 1fr;
+    }
+}

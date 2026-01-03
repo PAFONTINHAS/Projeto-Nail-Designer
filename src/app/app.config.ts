@@ -4,6 +4,7 @@ import {
   provideZoneChangeDetection,
   LOCALE_ID,
 } from '@angular/core';
+import { provideEnvironmentNgxMask } from 'ngx-mask';
 import { provideRouter } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideEnvironmentNgxMask(),
     {provide: MAT_DATE_LOCALE, useValue:'pt-BR'},
     {provide: LOCALE_ID, useValue:'pt-BR'}
   ],

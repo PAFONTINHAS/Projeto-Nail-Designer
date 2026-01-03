@@ -1,4 +1,12 @@
 
+.calendario-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
 /* Cor do círculo de seleção */
 ::ng-deep .mat-calendar {
     border: 1px solid #ddd;

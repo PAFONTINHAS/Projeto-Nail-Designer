@@ -20,130 +20,145 @@
                         </p>
                     </div>
                 </div>
-
-                <div class="agendamento-container">
-
-                    <div class="servicos-grid">
-                        <div class="titulo-servico">
+                
+                <section class="agendamento-container" id="agendamento-container">
+                    
+                    
+                    @if(!agendamentoSolicitado){
     
-                            <div class="etapa">
-                                <p class="numero">1</p>
-                                <p>Escolha os serviços</p>
-                            </div>
-                            <div class="selecao">
-                                <p>Selecione um ou mais serviços</p>
-                            </div>
-                        </div>
-    
-                        <div class="servico-categorias">
-                            <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Alongamento')" (click)="toggleCategoria('Alongamento')"> Alongamento</p>
-                            <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Manutencao')"  (click)="toggleCategoria('Manutencao')">Manutenção</p>
-                            <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Extras')"      (click)="toggleCategoria('Extras')">Extras</p>
-                        </div>
-                        @for (servico of servicosDisponiveis; track $index) {
-    
-                            <div class="card-servico" [class.selecionado]="isServicoSelecionado(servico.id)" (click)="toggleServico(servico)">
-    
-                                <div class="info">
-                                    <div class="nome-servico">
-                                        <h4>{{servico.nome}}</h4>
-                                    </div>
-                                    <div class="info-servico">
-                                        <span><i-lucide [img]="Clock" class="relogio" color="black" [size]="11.2"></i-lucide> {{servico.duracao}} min</span>
-                                        <span>R$ {{servico.preco}},00</span>
-                                    </div>
-                                </div>
-    
-                                <div class="checkbox-custom"></div>
-                            
-                            </div>
-    
-                        }
-    
-                        @if (servicosSelecionados.length > 0) {
-                            
-                            <div class="resumo-footer">
-                                <hr>
-                                <br>
-                                <p>Total de serviços: {{servicosSelecionados.length}}</p>
-                                <p>Duração Estimada: {{totalDuracao}} min</p>
-                                <p class="valor-total">Valor Total: R$ {{totalPreco}},00</p>
-                            </div>
-                        }
-                    </div>
-
-
-                    <div class="calendario-coluna">
-                        <div class="titulo-servico">
-                            <div class="etapa">
-                                <p class="numero">2</p>
-                                <p>Escolha a data</p>
-                            </div>
-                            <div class="selecao">
-                                <p>Selecione o dia do atendimento</p>
-                            </div>
-                        </div>
-
-                        <mat-card class="calendario-card">
-                            <mat-calendar
-                                [(selected)]="dataSelecionada"
-                                [dateFilter]="filtroDeDatas"
-                                (selectedChange)="selecionarData($event)"
-                                >
-                            </mat-calendar>
-                        </mat-card>
-
-
-                    </div>
-
-
-                    <div class="horarios-coluna">
-                        <div class="titulo-servico">
-                            <div class="etapa">
-                                <p class="numero">3</p>
-                                <p>Horários Disponíveis</p>
-                            </div>
-
-                            <div class="selecao">
-                                <p>Horários para o dia {{dataSelecionada | date: "mediumDate"}}</p>
-                            </div>
-                        </div>
-
-                        <div class="horarios-grid">
-
-                            @if(dataSelecionada){
-
-                                @for(hora of horariosDisponiveis; track $index){
-
-                                    <button 
-                                        [class.hora-selecionada]="horarioSelecionado === hora"
-                                        (click)="selecionarHorario(hora)"
-                                        >
-                                        {{hora}}
-                                    </button>
-
-                                }
-                            }
-                            @else {
-
-                                <div class="card-servico">
-
-                                    <div class="info">
-                                        <div class="nome-servico">
-                                            <h4>Selecione uma data primeiro</h4>
-                                        </div>
-                                    </div>
+                        <div class="servicos-grid">
+                            <div class="titulo-servico">
         
-                                    <div class="checkbox-custom"></div>
-                                
+                                <div class="etapa">
+                                    <p class="numero">1</p>
+                                    <p>Escolha os serviços</p>
                                 </div>
+                                <div class="selecao">
+                                    <p>Selecione um ou mais serviços</p>
+                                </div>
+                            </div>
+        
+                            <div class="servico-categorias">
+                                <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Alongamento')" (click)="toggleCategoria('Alongamento')"> Alongamento</p>
+                                <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Manutencao')"  (click)="toggleCategoria('Manutencao')">Manutenção</p>
+                                <p onkeypress="" [class.categoria-selecionada]="isCategoriaSelecionada('Extras')"      (click)="toggleCategoria('Extras')">Extras</p>
+                            </div>
+    
+                            <div class="lista-servicos">
+    
+                                @for (servico of servicosDisponiveis; track $index) {
+            
+                                    <div class="card-servico" [class.selecionado]="isServicoSelecionado(servico.id)" (click)="toggleServico(servico)">
+            
+                                        <div class="info">
+                                            <div class="nome-servico">
+                                                <h4>{{servico.nome}}</h4>
+                                            </div>
+                                            <div class="info-servico">
+                                                <span><i-lucide [img]="Clock" class="relogio" color="black" [size]="11.2"></i-lucide> {{servico.duracao}} min</span>
+                                                <span>R$ {{servico.preco}},00</span>
+                                            </div>
+                                        </div>
+            
+                                        <div class="checkbox-custom"></div>
+                                    
+                                    </div>
+            
+                                }
+                            </div>
+        
+                            @if (servicosSelecionados.length > 0) {
                                 
+                                <div class="resumo-footer">
+                                    <hr>
+                                    <br>
+                                    <p>Total de serviços: {{servicosSelecionados.length}}</p>
+                                    <p>Duração Estimada: {{totalDuracao}} min</p>
+                                    <p class="valor-total">Valor Total: R$ {{totalPreco}},00</p>
+                                </div>
                             }
-
+                        </div>
+    
+    
+                        <div class="calendario-coluna">
+                            <div class="titulo-servico">
+                                <div class="etapa">
+                                    <p class="numero">2</p>
+                                    <p>Escolha a data</p>
+                                </div>
+                                <div class="selecao">
+                                    <p>Selecione o dia do atendimento</p>
+                                </div>
+                            </div>
+    
+                            <mat-card class="calendario-card">
+                                <mat-calendar
+                                    [(selected)]="dataSelecionada"
+                                    [dateFilter]="filtroDeDatas"
+                                    (selectedChange)="selecionarData($event)"
+                                    >
+                                </mat-calendar>
+                            </mat-card>
+    
+    
+                        </div>
+    
+    
+                        <div class="horarios-coluna">
+                            <div class="titulo-servico">
+                                <div class="etapa">
+                                    <p class="numero">3</p>
+                                    <p>Horários Disponíveis</p>
+                                </div>
+    
+                                <div class="selecao">
+                                    <p>Horários para o dia {{dataSelecionada | date: "mediumDate"}}</p>
+                                </div>
+                            </div>
+    
+                            <div class="horarios-grid">
+    
+                                @if(dataSelecionada){
+    
+                                    @for(item of horarioStatus; track item.hora){
+    
+                                        <button 
+                                            [disabled]="item.ocupado"
+                                            [class.hora-ocupada]="item.ocupado"
+                                            [class.hora-selecionada]="horarioSelecionado === item.hora"
+                                            [class.no-intervalo]="isNoIntervaloSelecionado(item.hora)"
+                                            (click)="selecionarHorario(item.hora)"
+                                            >
+                                            {{item.hora}}
+                                            @if(item.ocupado){
+                                                <span class="status-badge">Ocupado</span>
+                                            }
+                                        </button>
+    
+                                    }
+                                }
+                                @else {
+    
+                                    <div class="card-servico">
+    
+                                        <div class="info">
+                                            <div class="nome-servico">
+                                                <h4>Selecione uma data primeiro</h4>
+                                            </div>
+                                        </div>
+            
+                                        <div class="checkbox-custom"></div>
+                                    
+                                    </div>
+                                    
+                                }
+    
+                            </div>
                             @if(dataSelecionada && horarioSelecionado && servicosSelecionados.length > 0){
-                                <button class="btn-finalizar">Confirmar para {{dataSelecionada | date: "mediumDate"}} às {{horarioSelecionado}}</button>
+                                <a href="/main#agendamento-container" class="btn-prosseguir" (click)="prosseguirAgendamento()">Confirmar para {{dataSelecionada | date: "mediumDate"}} às {{horarioSelecionado}}</a>
+                                <!-- <button class="btn-finalizar" (click)="prosseguirAgendamento()">Confirmar para {{dataSelecionada | date: "mediumDate"}} às {{horarioSelecionado}}</button> -->
                             } @else {
-
+    
                                 @if(servicosSelecionados.length <= 0 && dataSelecionada && horarioSelecionado){
                                     <div class="selecao">
                                         <div class="card-servico">
@@ -159,9 +174,54 @@
                                     </div>
                                 }                                        
                             }
-                        </div>
-                    </div>                            
-                </div>
+                        </div>                            
+                    } @else {
+                        
+                        <section class="dados-cliente" id="dados-cliente">
+                            <h3 class="secao-titulo">Resumo do Agendamento</h3>
+
+                            <div class="dados-agendamento">
+                                <div class="card-resumo servicos-selecionados">
+                                    <p class="label-grupo">Serviços Selecionados</p>
+                                    <div class="selecionados">
+                                        @for(servico of servicosSelecionados; track $index){
+                                            <div class="servico-item">
+                                                <span class="nome-serv">{{servico.nome}}</span>
+                                                <span class="detalhe-serv">R${{servico.preco}} • {{servico.duracao}}min</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="fatura">
+                                        <p>Total: <strong>R$ {{totalPreco}},00</strong></p>
+                                        <span>Tempo total: {{totalDuracao}} min</span>
+                                    </div>
+                                </div>
+
+                                <div class="card-resumo data-agendamento">
+                                    <p class="label-grupo">Horário Escolhido</p>
+                                    <div class="info-data">
+                                        <i class="bi bi-calendar"></i> <p><strong>Data:</strong> {{dataSelecionada | date: "dd/MM/yyyy"}}</p>
+                                        <p><strong>Hora:</strong> {{horarioSelecionado}}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formulario-cliente">
+                                <div class="input-group">
+                                    <label for="nome">Nome Completo</label>
+                                    <input type="text" #inputNome placeholder="Ex: Maria Oliveira">
+                                </div>
+
+                                <div class="input-group">
+                                    <label for="contato">Telefone / WhatsApp</label>
+                                    <input type="text" #inputContato mask="(00) 00000-0000"  placeholder="(00) 00000-0000">
+                                </div>
+                                
+                                <button class="btn-finalizar" (click)="finalizarAgendamento(inputNome.value, inputContato.value)">Confirmar Agendamento</button>
+                            </div>
+                        </section>
+                    }
+                </section>
             </div>
         </div>
     </div>
