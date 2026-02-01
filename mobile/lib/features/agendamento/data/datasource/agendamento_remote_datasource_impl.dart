@@ -11,9 +11,9 @@ class AgendamentoRemoteDatasourceImpl implements AgendamentoRemoteDatasource{
   @override
   Stream<List<AgendamentoEntity>> listenAgendamentos(){
 
-    final ontem = DateTime.now().subtract(Duration(days: 1));
+    final passado = DateTime.now().subtract(Duration(days: 30));
 
-    Query query = _firestore.collection('agendamentos').where('data', isGreaterThanOrEqualTo: Timestamp.fromDate(ontem));
+    Query query = _firestore.collection('agendamentos').where('data', isGreaterThanOrEqualTo: Timestamp.fromDate(passado));
 
     final agendamentos = query.snapshots().map((snapshot){
 

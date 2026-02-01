@@ -53,6 +53,41 @@ class HomePage extends StatelessWidget {
             ),
           ),
 
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  controller.dataVisualizada.day == DateTime.now().day
+                      ? "Hoje"
+                      : "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: controller.dataVisualizada,
+                      firstDate: DateTime.now().subtract(
+                        const Duration(days: 365),
+                      ),
+                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                    );
+                    if (date != null) {
+                      controller.setDataVisualizada(date);
+                    }
+                  },
+                  icon: const Icon(Icons.edit_calendar, size: 20),
+                  label: const Text("Mudar data"),
+                ),
+              ],
+            ),
+          ),
+
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text("Próximos Clientes", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -72,7 +107,7 @@ class AgendamentosListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<AgendamentoController, List<AgendamentoEntity>>(
-      selector: (_, controller) => controller.agendamentosDoDia,
+      selector: (_, controller) => controller.agendamentosDataSelecionada,
       builder: (context, agendamentos, _) {
         return Expanded(
           child: agendamentos.isEmpty

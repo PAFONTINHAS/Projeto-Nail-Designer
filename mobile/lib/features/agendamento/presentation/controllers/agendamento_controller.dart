@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:logger/web.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
 import 'package:mobile/features/agendamento/domain/usecases/listen_agendamentos_usecase.dart';
 
@@ -19,8 +17,18 @@ class AgendamentoController extends ChangeNotifier{
 
   StreamSubscription? _agendamentosSubscription;
 
-  List<AgendamentoEntity> getAgendamentosPorData(DateTime data){
-    return _agendamentosPorDia[_formatDateKey(data)] ?? [];
+  DateTime _dataVisualizada = DateTime.now();
+  DateTime get dataVisualizada => _dataVisualizada;
+
+  List<AgendamentoEntity> get agendamentosDataSelecionada{
+    final String dateKey = _formatDateKey(_dataVisualizada);
+
+    return _agendamentosPorDia[dateKey] ?? [];
+  }
+
+  void setDataVisualizada(DateTime novaData){
+    _dataVisualizada = novaData;
+    notifyListeners();
   }
 
   String _formatDateKey(DateTime data) => "${data.day}/${data.month}/${data.year}";
