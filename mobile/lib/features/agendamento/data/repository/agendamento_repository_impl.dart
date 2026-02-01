@@ -14,5 +14,11 @@ class AgendamentoRepositoryImpl implements AgendamentoRepository{
 
     return remoteDatasource.listenAgendamentos();
   }
+
+  @override
+  Future<void> atualizarStatus(String id, bool status) async{
+    return await remoteDatasource.atualizarStatus(id, status);
+  }
+
   
 } 

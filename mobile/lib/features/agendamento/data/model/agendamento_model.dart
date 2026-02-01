@@ -19,7 +19,7 @@ class AgendamentoModel extends AgendamentoEntity {
     return AgendamentoModel(
       id: doc.id,
       nomeCliente: data['clienteNome'] ?? '',
-      contatoCliente: data['clienteContato'] ?? '',
+      contatoCliente: data['contato'] ?? '',
       data: (data['data'] as Timestamp).toDate(),
       servicos: List<String>.from(data['servicos'] ?? []),
       valorTotal: (data['valorTotal'] as num).toDouble(),

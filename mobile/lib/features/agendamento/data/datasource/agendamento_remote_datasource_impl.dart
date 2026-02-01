@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 import 'package:mobile/core/firebase/firebase_instances.dart';
 import 'package:mobile/features/agendamento/data/model/agendamento_model.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
@@ -11,7 +12,7 @@ class AgendamentoRemoteDatasourceImpl implements AgendamentoRemoteDatasource{
   @override
   Stream<List<AgendamentoEntity>> listenAgendamentos(){
 
-    final passado = DateTime.now().subtract(Duration(days: 30));
+    final passado = DateTime.now().subtract(Duration(days: 1));
 
     Query query = _firestore.collection('agendamentos').where('data', isGreaterThanOrEqualTo: Timestamp.fromDate(passado));
 
@@ -21,6 +22,15 @@ class AgendamentoRemoteDatasourceImpl implements AgendamentoRemoteDatasource{
     });
 
     return agendamentos;
+  }
+
+  @override
+  Future<void> atualizarStatus(String id, bool status) async{
+    try{
+      await _firestore.collection('agendamentos').doc(id).update({'finalizado': status});
+    }catch(e){
+      Logger().e("Erro ao atualizar status: $e");
+    }
   }
   
 }

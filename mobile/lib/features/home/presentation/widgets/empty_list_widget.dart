@@ -25,7 +25,17 @@ class EmptyListWidget extends StatelessWidget {
           titulo = "Nenhum agendamento para o dia $diaVisualizado/$mesVisualizado";
         }
 
-        return Center(child: Text(titulo));
+        return Padding(
+          padding: EdgeInsets.all(10),
+          child: Center(
+            child: Text(
+              titulo,
+              style: TextStyle(fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+          ),) ;
+        
+        Center(child: Text(titulo, style: TextStyle(fontSize: 15),));
       },
     );
   }

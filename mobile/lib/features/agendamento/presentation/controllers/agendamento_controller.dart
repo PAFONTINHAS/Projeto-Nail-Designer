@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
+import 'package:mobile/features/agendamento/domain/usecases/atualizar_status_usecase.dart';
 import 'package:mobile/features/agendamento/domain/usecases/listen_agendamentos_usecase.dart';
 
 class AgendamentoController extends ChangeNotifier{
 
   final ListenAgendamentosUsecase _listenAgendamentosUsecase;
+  final AtualizarStatusUsecase _atualizarStatusUsecase;
 
-  AgendamentoController(this._listenAgendamentosUsecase);
+  AgendamentoController(this._listenAgendamentosUsecase, this._atualizarStatusUsecase);
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -22,8 +24,10 @@ class AgendamentoController extends ChangeNotifier{
 
   List<AgendamentoEntity> get agendamentosDataSelecionada{
     final String dateKey = _formatDateKey(_dataVisualizada);
+    final lista = _agendamentosPorDia[dateKey] ?? [];
 
-    return _agendamentosPorDia[dateKey] ?? [];
+
+    return lista.where((a) => !a.finalizado).toList();
   }
 
   void setDataVisualizada(DateTime novaData){
@@ -77,6 +81,23 @@ class AgendamentoController extends ChangeNotifier{
     _isLoading = false;
     notifyListeners();
   }
+
+
+
+Future<void> atualizarStatus(String id, bool status) async {
+  _isLoading = true;
+  notifyListeners();
+
+  try {
+    await _atualizarStatusUsecase.call(id, status);
+    
+  } catch (e) {
+    _errorMessage = e.toString();
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
+}
 
   @override
   void dispose() {

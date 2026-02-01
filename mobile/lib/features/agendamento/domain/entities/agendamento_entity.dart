@@ -19,4 +19,20 @@ class AgendamentoEntity {
   final String nomeCliente;
   final String contatoCliente;
   final List<String> servicos;
+
+  Map<String, dynamic> toMap(){
+
+    return {
+
+      "id": id,
+      "data": data,
+      "finalizado": finalizado,
+      "duracaoTotal": duracaoTotal,
+      "valorTotal": valorTotal,
+      "nomeCliente": nomeCliente,
+      "contatoCliente": contatoCliente,
+      "servicos": servicos,
+    };
+
+  }
 }

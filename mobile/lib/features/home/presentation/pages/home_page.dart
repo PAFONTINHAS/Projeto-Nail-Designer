@@ -11,17 +11,26 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<AgendamentoController>();
-    final agendamentos = controller.agendamentosDoDia;
+    final agendamentos = controller.agendamentosDataSelecionada;
+    final String dataVisualizada =
+        "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}";
+    final bool isToday = controller.dataVisualizada.day == DateTime.now().day;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5), // Cinza bem clarinho de fundo
       appBar: AppBar(
-        title: const Text("Minha Agenda", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Minha Agenda",
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.calendar_month, color: Color(0xFFEC489A)))
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.calendar_month, color: Color(0xFFEC489A)),
+          ),
         ],
       ),
       body: Column(
@@ -33,7 +42,9 @@ class HomePage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFFEC489A), Color(0xFFD63384)]),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFEC489A), Color(0xFFD63384)],
+                ),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -42,9 +53,19 @@ class HomePage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Hoje", style: TextStyle(color: Colors.white70, fontSize: 16)),
-                      Text("${agendamentos.length} Agendamentos", 
-                        style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                      Text(
+                        isToday ? "Hoje" : dataVisualizada,
+
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                      ),
+                      Text(
+                        "${agendamentos.length} Agendamentos",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                   const Icon(Icons.auto_awesome, color: Colors.white, size: 40),
@@ -59,9 +80,7 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  controller.dataVisualizada.day == DateTime.now().day
-                      ? "Hoje"
-                      : "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}",
+                  isToday ? "Hoje" : dataVisualizada,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -90,15 +109,17 @@ class HomePage extends StatelessWidget {
 
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Text("Próximos Clientes", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            child: Text(
+              "Próximos Clientes",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
 
-          const AgendamentosListWidget()
+          const AgendamentosListWidget(),
         ],
       ),
     );
   }
-
 }
 
 class AgendamentosListWidget extends StatelessWidget {
@@ -125,6 +146,3 @@ class AgendamentosListWidget extends StatelessWidget {
     );
   }
 }
-
-
-
