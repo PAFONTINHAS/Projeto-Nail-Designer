@@ -157,4 +157,13 @@
     transition: 0.7s;
 }
 
+::ng-deep .snackbar-aviso {
+  background-color: #333 !important; /* Fundo escuro para contraste */
+  color: white !important;
+}
+
+::ng-deep .snackbar-aviso .mat-mdc-snack-bar-action {
+  color: #ec489a !important; /* Cor do botão "Entendi" no seu rosa */
+  font-weight: bold;
+}
 

@@ -1,4 +1,4 @@
-import { Component, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, LOCALE_ID, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { LucideAngularModule, CircleAlert, Clock } from 'lucide-angular';
 import { Servico } from '../../shared/models/servico_model';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,8 @@ import { AgendamentoService } from '../../shared/services/agendamento-service/ag
 import { ServicosService } from '../../shared/services/servicos-service/servicos-service';
 import { NgxMaskDirective } from "ngx-mask";
 import { AgendaConfig } from '../../shared/models/agenda_config_model';
+import { Subscription } from 'rxjs';
+import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-agendamentos',
@@ -19,6 +21,7 @@ import { AgendaConfig } from '../../shared/models/agenda_config_model';
     MatDatepickerModule,
     MatNativeDateModule,
     NgxMaskDirective,
+    MatSnackBarModule,
   ],
   templateUrl: './agendamentos.html',
   styleUrls: [
@@ -30,15 +33,17 @@ import { AgendaConfig } from '../../shared/models/agenda_config_model';
     './css/media-query.css',
   ],
 })
-export class Agendamentos implements OnInit {
+export class Agendamentos implements OnInit, OnDestroy {
   constructor(
     private readonly agendamentoService: AgendamentoService,
-    private readonly servicosService: ServicosService
+    private readonly servicosService: ServicosService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private _snackBar: MatSnackBar,
   ) {}
 
+  private agendaSubscription!: Subscription;
+
   agendamentoSolicitado: boolean = false;
-
-
 
   horarioStatus: { hora: string; ocupado: boolean }[] = [];
 
@@ -51,33 +56,74 @@ export class Agendamentos implements OnInit {
 
   agendaConfig!: AgendaConfig;
 
+  renderizarCalendario: boolean = true;
+
+
+
   async ngOnInit() {
     this.servicos = (await this.servicosService.getServicos()) as Servico[];
 
-    const config = await this.agendamentoService.getAgendaConfig();
+    this.agendaSubscription = this.agendamentoService
+      .getAgenda()
+      .subscribe((config) => {
+        if (this.agendaConfig) {
+          this.notificarMudancaEResetar();
 
-    if(config){
-      this.agendaConfig = config;
-      this.gerarHorarios();
-    }
+          this.renderizarCalendario = false;
+          this.changeDetectorRef.detectChanges();
+
+          setTimeout(() =>{
+            this.renderizarCalendario = true;
+            this.changeDetectorRef.detectChanges();
+          }, 10);
+        }
+        
+        this.agendaConfig = config;
+    
+        this.limparCampos();
+        this.gerarHorarios();
+        this.changeDetectorRef.detectChanges();
+        console.log('Agenda atualizada em tempo real!');
+      });
   }
 
-  gerarHorarios(){
-    const horarios : string[] = [];
+  notificarMudancaEResetar() {
+    this._snackBar.open(
+      'A disponibilidade da agenda foi atualizada. Suas seleções foram resetadas por segurança.',
+      'Entendi',
+      {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        panelClass: ['snackbar-aviso'], // Para estilizarmos depois
+      },
+    );
 
-    const converterParaMinutos = (h:string) =>{
+    // 2. Limpa tudo o que o usuário já tinha feito
+    this.limparCampos();
+  }
+
+  ngOnDestroy(): void {
+    if (this.agendaSubscription) {
+      this.agendaSubscription.unsubscribe();
+    }
+  }
+  gerarHorarios() {
+    this.gradeHorarios = [];
+    const horarios: string[] = [];
+
+    const converterParaMinutos = (h: string) => {
       const [horas, minutos] = h.split(':').map(Number);
 
       return horas * 60 + minutos;
-    }
+    };
 
     const inicioTotal = converterParaMinutos(this.agendaConfig.horarioInicio);
-    const fimTotal  = converterParaMinutos(this.agendaConfig.horarioFim);
+    const fimTotal = converterParaMinutos(this.agendaConfig.horarioFim);
     const intervalo = 60;
 
-    for(let minutos = inicioTotal; minutos < fimTotal; minutos +=intervalo){
-
-      const h = Math.floor(minutos/60);
+    for (let minutos = inicioTotal; minutos < fimTotal; minutos += intervalo) {
+      const h = Math.floor(minutos / 60);
       const m = minutos % 60;
 
       const horarioFormatado = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
@@ -85,16 +131,16 @@ export class Agendamentos implements OnInit {
     }
 
     this.gradeHorarios = horarios;
-
+    this.changeDetectorRef.detectChanges();
   }
 
-  async getAgendaConfig(){
+  async getAgendaConfig() {
     return await this.agendamentoService.getAgendaConfig();
   }
 
   get alongamento_unhas() {
     return this.servicos.filter(
-      (servico) => servico.categoria == 'Alongamento'
+      (servico) => servico.categoria == 'Alongamento',
     );
   }
 
@@ -112,8 +158,6 @@ export class Agendamentos implements OnInit {
   dataSelecionada: Date | null = null;
   horarioSelecionado: string | null = null;
 
-
-
   categoriaAtiva: string = 'Alongamento';
 
   get servicosDisponiveis() {
@@ -122,7 +166,7 @@ export class Agendamentos implements OnInit {
 
   toggleServico(servico: Servico) {
     const index = this.servicosSelecionados.findIndex(
-      (s) => s.id === servico.id
+      (s) => s.id === servico.id,
     );
 
     if (index > -1) {
@@ -158,6 +202,8 @@ export class Agendamentos implements OnInit {
     this.horarioSelecionado = null;
     this.servicosSelecionados = [];
     this.horarioStatus = [];
+    this.categoriaAtiva = 'Alongamento';
+    this.changeDetectorRef.detectChanges();
   }
 
   async finalizarAgendamento(nome: string, contato: string) {
@@ -227,10 +273,12 @@ export class Agendamentos implements OnInit {
         ocupado: conflito,
       };
     });
+
+    this.changeDetectorRef.detectChanges();
   }
 
   selecionarHorario(hora: string) {
-    if(!this.agendaConfig) return;
+    if (!this.agendaConfig) return;
 
     const [h, m] = hora.split(':').map(Number);
     const inicio = h * 60 + m;
@@ -243,12 +291,12 @@ export class Agendamentos implements OnInit {
 
     if (fim > limiteFechamento) {
       alert(
-        'Este serviço termina após o horário de fechamento. Escolha um horário mais cedo.'
+        'Este serviço termina após o horário de fechamento. Escolha um horário mais cedo.',
       );
       return;
     }
 
-    const conflitoNoIntervalo = this.horarioStatus.some(item => {
+    const conflitoNoIntervalo = this.horarioStatus.some((item) => {
       const [hItem, mItem] = item.hora.split(':').map(Number);
       const minutoItem = hItem * 60 + mItem;
 
@@ -258,10 +306,11 @@ export class Agendamentos implements OnInit {
     });
 
     if (conflitoNoIntervalo) {
-        alert('A duração deste serviço conflita com um horário já reservado adiante.');
-        return;
-      }
-
+      alert(
+        'A duração deste serviço conflita com um horário já reservado adiante.',
+      );
+      return;
+    }
 
     this.horarioSelecionado = hora;
   }
@@ -295,50 +344,29 @@ export class Agendamentos implements OnInit {
   get totalPreco() {
     return this.servicosSelecionados.reduce(
       (total, servico) => total + servico.preco,
-      0
+      0,
     );
   }
 
   get totalDuracao() {
     return this.servicosSelecionados.reduce(
       (total, servico) => total + servico.duracao,
-      0
+      0,
     );
   }
 
-
-  // filtroDeDatas = (d: Date | null): boolean => {
-  //   const day = (d || new Date()).getDay();
-  //   const time = (d || new Date()).getTime();
-  //   const hoje = new Date();
-  //   hoje.setHours(0, 0, 0, 0);
-  
-  //   // 1. Bloquear dias passados
-  //   if (d! < hoje) return false;
-  
-  //   // 2. Exemplo: Não trabalha aos Domingos (0) e Segundas (1)
-  //   // return day !== 0 && day !== 1;
-  
-  //   // 3. Bloquear uma semana específica (ex: férias)
-  //   const inicioFerias = new Date('2025-01-10').getTime();
-  //   const fimFerias = new Date('2025-01-17').getTime();
-  //   if (time >= inicioFerias && time <= fimFerias) return false;
-  
-  //   return true;
-  // };
-
   filtroDeDatas = (d: Date | null): boolean => {
+    if (!this.agendaConfig || !d) return false;
 
-    if(!this.agendaConfig || !d) return false;
-    
     const hoje = new Date();
 
-    hoje.setHours(0,0,0,0);
+    hoje.setHours(0, 0, 0, 0);
 
-    if(d < hoje) return false;
-    
+    if (d < hoje) return false;
+
     const diaSemana = (d || new Date()).getDay();
 
+    this.changeDetectorRef.detectChanges();
     return this.agendaConfig?.diasTrabalho.includes(diaSemana);
   };
 }

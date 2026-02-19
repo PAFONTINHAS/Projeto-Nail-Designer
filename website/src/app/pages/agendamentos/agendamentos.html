@@ -91,19 +91,22 @@
                                 </div>
                             </div>
                             
-                            @if(agendaConfig){
-                                <mat-card class="calendario-card">
-                                    <mat-calendar
-                                        [(selected)]="dataSelecionada"
-                                        [dateFilter]="filtroDeDatas"
-                                        (selectedChange)="selecionarData($event)"
-                                        >
-                                    </mat-calendar>
-                                </mat-card>
-                            } @else {
-                                <div class="loading-calendar">Carregando agenda...</div>
+                            @if(renderizarCalendario){
+                                @if(agendaConfig){
+                                    <mat-card class="calendario-card">
+                                        <mat-calendar
+                                            [(selected)]="dataSelecionada"
+                                            [dateFilter]="filtroDeDatas"
+                                            (selectedChange)="selecionarData($event)"
+                                            >
+                                        </mat-calendar>
+                                    </mat-card>
+                                } @else {
+                                    <div class="loading-calendar">Carregando agenda...</div>
+                                }
+                            } @else{
+                                <div class="loading-calendar">Atualizando disponibilidade...</div>
                             }
-    
     
                         </div>
     

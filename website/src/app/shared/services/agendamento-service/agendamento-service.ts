@@ -10,8 +10,7 @@ import { AgendaConfig } from '../../models/agenda_config_model';
   providedIn: 'root',
 })
 export class AgendamentoService {
-
-  constructor(private readonly firebaseService: FirebaseService){}
+  constructor(private readonly firebaseService: FirebaseService) {}
 
   async getAgendaConfig() {
     const docRef = doc(this.firebaseService.db, 'configuracoes', 'agenda');
@@ -19,58 +18,88 @@ export class AgendamentoService {
 
     let data = snap.data();
 
-    if(!data){
-      console.error("Erro ao pegar o documento da agenda");
+    if (!data) {
+      console.error('Erro ao pegar o documento da agenda');
       return null;
     }
 
-    
-    const configModel : AgendaConfig = {
-      
+    const configModel: AgendaConfig = {
       diasTrabalho: data['diasTrabalho'],
       horarioInicio: data['horarioInicio'],
-      horarioFim: data['horarioFim']
+      horarioFim: data['horarioFim'],
     };
-    
-    console.log("Configuração da agenda capturada com sucesso!");
+
+    console.log('Configuração da agenda capturada com sucesso!');
 
     return configModel;
   }
 
-  getAgendamentosDoDia(data: Date): Observable<any[]>{
+  getAgenda(): Observable<AgendaConfig> {
     const db = this.firebaseService.db;
-    const inicioDia = new Date(data);
-    inicioDia.setHours(0,0,0,0);
 
-    const fimDia = new Date(data);
-    fimDia.setHours(23,59,59,999);
+    const docRef = doc(db, 'configuracoes', 'agenda');
 
-    const q =  query(
-      collection(db, 'agendamentos'), 
-      where('data', '>=', Timestamp.fromDate(inicioDia)), 
-      where('data', '<=', Timestamp.fromDate(fimDia))
-    );
+    return new Observable((sub) => {
+      const unsubscribe = onSnapshot(
+        docRef,
+        (snap) => {
+          const data = snap.data();
 
-    return new Observable(subscriber => {
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const agendamentos = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        subscriber.next(agendamentos);
-      }, (error) =>{
-        subscriber.error(error);
-      });
+          if (data) {
+            const configModel: AgendaConfig = {
+              diasTrabalho: data['diasTrabalho'],
+              horarioInicio: data['horarioInicio'],
+              horarioFim: data['horarioFim'],
+            };
+
+            sub.next(configModel);
+          }
+        },
+        (error) => {
+          sub.error(error);
+        },
+      );
 
       return () => unsubscribe();
     });
-
   }
 
-  salvarAgendamento(agendamento: Agendamento){
+  getAgendamentosDoDia(data: Date): Observable<any[]> {
+    const db = this.firebaseService.db;
+    const inicioDia = new Date(data);
+    inicioDia.setHours(0, 0, 0, 0);
+
+    const fimDia = new Date(data);
+    fimDia.setHours(23, 59, 59, 999);
+
+    const q = query(
+      collection(db, 'agendamentos'),
+      where('data', '>=', Timestamp.fromDate(inicioDia)),
+      where('data', '<=', Timestamp.fromDate(fimDia)),
+    );
+
+    return new Observable((subscriber) => {
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const agendamentos = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          subscriber.next(agendamentos);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
+  salvarAgendamento(agendamento: Agendamento) {
     const agendamentosRef = collection(this.firebaseService.db, 'agendamentos');
 
     return addDoc(agendamentosRef, agendamento);
   }
-
 }
