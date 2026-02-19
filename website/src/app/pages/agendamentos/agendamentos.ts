@@ -8,6 +8,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { AgendamentoService } from '../../shared/services/agendamento-service/agendamento-service';
 import { ServicosService } from '../../shared/services/servicos-service/servicos-service';
 import { NgxMaskDirective } from "ngx-mask";
+import { AgendaConfig } from '../../shared/models/agenda_config_model';
 
 @Component({
   selector: 'app-agendamentos',
@@ -37,6 +38,8 @@ export class Agendamentos implements OnInit {
 
   agendamentoSolicitado: boolean = false;
 
+
+
   horarioStatus: { hora: string; ocupado: boolean }[] = [];
 
   readonly CircleAlert = CircleAlert;
@@ -44,8 +47,49 @@ export class Agendamentos implements OnInit {
 
   servicos: Servico[] = [];
 
+  gradeHorarios: string[] = [];
+
+  agendaConfig!: AgendaConfig;
+
   async ngOnInit() {
     this.servicos = (await this.servicosService.getServicos()) as Servico[];
+
+    const config = await this.agendamentoService.getAgendaConfig();
+
+    if(config){
+      this.agendaConfig = config;
+      this.gerarHorarios();
+    }
+  }
+
+  gerarHorarios(){
+    const horarios : string[] = [];
+
+    const converterParaMinutos = (h:string) =>{
+      const [horas, minutos] = h.split(':').map(Number);
+
+      return horas * 60 + minutos;
+    }
+
+    const inicioTotal = converterParaMinutos(this.agendaConfig.horarioInicio);
+    const fimTotal  = converterParaMinutos(this.agendaConfig.horarioFim);
+    const intervalo = 60;
+
+    for(let minutos = inicioTotal; minutos < fimTotal; minutos +=intervalo){
+
+      const h = Math.floor(minutos/60);
+      const m = minutos % 60;
+
+      const horarioFormatado = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+      horarios.push(horarioFormatado);
+    }
+
+    this.gradeHorarios = horarios;
+
+  }
+
+  async getAgendaConfig(){
+    return await this.agendamentoService.getAgendaConfig();
   }
 
   get alongamento_unhas() {
@@ -144,20 +188,20 @@ export class Agendamentos implements OnInit {
   }
 
   atualizarHorariosDisponiveis(agendamentosOcupados: any[]) {
-    const gradePadrao = [
-      '09:00',
-      '10:00',
-      '11:00',
-      '12:00',
-      '13:00',
-      '14:00',
-      '15:00',
-      '16:00',
-      '17:00',
-    ];
+    // const gradePadrao = [
+    //   '09:00',
+    //   '10:00',
+    //   '11:00',
+    //   '12:00',
+    //   '13:00',
+    //   '14:00',
+    //   '15:00',
+    //   '16:00',
+    //   '17:00',
+    // ];
     const duracaoDesejada = this.totalDuracao;
 
-    this.horarioStatus = gradePadrao.map((horario) => {
+    this.horarioStatus = this.gradeHorarios.map((horario) => {
       const [hora, minuto] = horario.split(':').map(Number);
       const inicioProposto = hora * 60 + minuto;
       const fimProposto = inicioProposto + duracaoDesejada;
@@ -186,12 +230,18 @@ export class Agendamentos implements OnInit {
   }
 
   selecionarHorario(hora: string) {
+    if(!this.agendaConfig) return;
+
     const [h, m] = hora.split(':').map(Number);
     const inicio = h * 60 + m;
     const fim = inicio + this.totalDuracao;
 
     // Exemplo: Salão fecha às 18:00 (1080 minutos)
-    if (fim > 1080) {
+
+    const [hFim, mFim] = this.agendaConfig.horarioFim.split(':').map(Number);
+    const limiteFechamento = hFim * 60 + mFim;
+
+    if (fim > limiteFechamento) {
       alert(
         'Este serviço termina após o horário de fechamento. Escolha um horário mais cedo.'
       );
@@ -257,23 +307,38 @@ export class Agendamentos implements OnInit {
   }
 
 
+  // filtroDeDatas = (d: Date | null): boolean => {
+  //   const day = (d || new Date()).getDay();
+  //   const time = (d || new Date()).getTime();
+  //   const hoje = new Date();
+  //   hoje.setHours(0, 0, 0, 0);
+  
+  //   // 1. Bloquear dias passados
+  //   if (d! < hoje) return false;
+  
+  //   // 2. Exemplo: Não trabalha aos Domingos (0) e Segundas (1)
+  //   // return day !== 0 && day !== 1;
+  
+  //   // 3. Bloquear uma semana específica (ex: férias)
+  //   const inicioFerias = new Date('2025-01-10').getTime();
+  //   const fimFerias = new Date('2025-01-17').getTime();
+  //   if (time >= inicioFerias && time <= fimFerias) return false;
+  
+  //   return true;
+  // };
+
   filtroDeDatas = (d: Date | null): boolean => {
-    const day = (d || new Date()).getDay();
-    const time = (d || new Date()).getTime();
+
+    if(!this.agendaConfig || !d) return false;
+    
     const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
 
-    // 1. Bloquear dias passados
-    if (d! < hoje) return false;
+    hoje.setHours(0,0,0,0);
 
-    // 2. Exemplo: Não trabalha aos Domingos (0) e Segundas (1)
-    // return day !== 0 && day !== 1;
+    if(d < hoje) return false;
+    
+    const diaSemana = (d || new Date()).getDay();
 
-    // 3. Bloquear uma semana específica (ex: férias)
-    const inicioFerias = new Date('2025-01-10').getTime();
-    const fimFerias = new Date('2025-01-17').getTime();
-    if (time >= inicioFerias && time <= fimFerias) return false;
-
-    return true;
+    return this.agendaConfig?.diasTrabalho.includes(diaSemana);
   };
 }

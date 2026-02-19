@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { FirebaseServerApp } from 'firebase/app';
 import { FirebaseService } from '../firebase-service/firebase-service';
 import { from, Observable } from 'rxjs';
-import { collection, Firestore, query, where, onSnapshot, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, Firestore, query, where, onSnapshot, addDoc, Timestamp, doc, getDoc} from 'firebase/firestore';
 import { Agendamento } from '../../models/agendamento_model';
+import { AgendaConfig } from '../../models/agenda_config_model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,30 @@ import { Agendamento } from '../../models/agendamento_model';
 export class AgendamentoService {
 
   constructor(private readonly firebaseService: FirebaseService){}
+
+  async getAgendaConfig() {
+    const docRef = doc(this.firebaseService.db, 'configuracoes', 'agenda');
+    const snap = await getDoc(docRef);
+
+    let data = snap.data();
+
+    if(!data){
+      console.error("Erro ao pegar o documento da agenda");
+      return null;
+    }
+
+    
+    const configModel : AgendaConfig = {
+      
+      diasTrabalho: data['diasTrabalho'],
+      horarioInicio: data['horarioInicio'],
+      horarioFim: data['horarioFim']
+    };
+    
+    console.log("Configuração da agenda capturada com sucesso!");
+
+    return configModel;
+  }
 
   getAgendamentosDoDia(data: Date): Observable<any[]>{
     const db = this.firebaseService.db;

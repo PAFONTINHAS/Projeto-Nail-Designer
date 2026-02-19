@@ -90,15 +90,19 @@
                                     <p>Selecione o dia do atendimento</p>
                                 </div>
                             </div>
-    
-                            <mat-card class="calendario-card">
-                                <mat-calendar
-                                    [(selected)]="dataSelecionada"
-                                    [dateFilter]="filtroDeDatas"
-                                    (selectedChange)="selecionarData($event)"
-                                    >
-                                </mat-calendar>
-                            </mat-card>
+                            
+                            @if(agendaConfig){
+                                <mat-card class="calendario-card">
+                                    <mat-calendar
+                                        [(selected)]="dataSelecionada"
+                                        [dateFilter]="filtroDeDatas"
+                                        (selectedChange)="selecionarData($event)"
+                                        >
+                                    </mat-calendar>
+                                </mat-card>
+                            } @else {
+                                <div class="loading-calendar">Carregando agenda...</div>
+                            }
     
     
                         </div>

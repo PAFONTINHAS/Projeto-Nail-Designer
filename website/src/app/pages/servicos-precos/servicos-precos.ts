@@ -4,10 +4,11 @@ import { LucideAngularModule, Layers, Wrench, Palette  } from "lucide-angular";
 import { CardModel } from '../../shared/models/card_model';
 import { ServicosService } from '../../shared/services/servicos-service/servicos-service';
 import { servicos_adicionar } from '../../shared/mocks/servicos';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-servicos-precos',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, DecimalPipe],
   templateUrl: './servicos-precos.html',
   styleUrl: './servicos-precos.css',
 })
