@@ -34,8 +34,6 @@ class EmptyListWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),) ;
-        
-        Center(child: Text(titulo, style: TextStyle(fontSize: 15),));
       },
     );
   }

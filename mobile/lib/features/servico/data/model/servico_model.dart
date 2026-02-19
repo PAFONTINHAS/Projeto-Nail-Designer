@@ -13,10 +13,13 @@ class ServicoModel extends ServicoEntity {
 
   factory ServicoModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    final isInt = data['preco'] is int ? true: false;
+    final preco = isInt ? (data['preco'] as int).toDouble() : data['preco'];
+
     return ServicoModel(
       id: doc.id,
       nome: data['nome'],
-      preco: (data['preco'] as int).toDouble(),
+      preco: preco,
       duracao: data['duracao'],
       categoria: data['categoria'],
     );

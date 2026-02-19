@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/home/presentation/widgets/empty_list_widget.dart';
+import 'package:mobile/features/configuracoes/presentation/pages/config_page.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
 import 'package:mobile/features/home/presentation/widgets/agendamento_card_widget.dart';
 import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
@@ -12,8 +13,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.watch<AgendamentoController>();
     final agendamentos = controller.agendamentosDataSelecionada;
-    final String dataVisualizada =
-        "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}";
+    final String dataVisualizada = "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}";
     final bool isToday = controller.dataVisualizada.day == DateTime.now().day;
 
     return Scaffold(
@@ -27,9 +27,22 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         centerTitle: false,
         actions: [
+          // Botão de Calendário que você já tinha
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+               // Você pode abrir o datePicker aqui também se quiser
+            },
             icon: const Icon(Icons.calendar_month, color: Color(0xFFEC489A)),
+          ),
+          // NOVO: Botão de Configurações
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ConfigPage()),
+              );
+            },
+            icon: const Icon(Icons.settings, color: Colors.grey),
           ),
         ],
       ),

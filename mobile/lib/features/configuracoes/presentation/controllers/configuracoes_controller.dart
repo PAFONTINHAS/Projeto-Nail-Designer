@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:mobile/features/configuracoes/domain/entities/agenda.dart';
+import 'package:mobile/features/configuracoes/domain/usecases/get_agenda_usecase.dart';
+import 'package:mobile/features/configuracoes/domain/usecases/update_agenda_usecase.dart';
+import 'package:mobile/features/configuracoes/presentation/pages/config_page.dart';
+
+class ConfiguracoesController extends ChangeNotifier{
+
+  final GetAgendaUsecase _getAgendaUsecase;
+  final UpdateAgendaUsecase _updateAgendaUsecase;
+
+  ConfiguracoesController(this._getAgendaUsecase,  this._updateAgendaUsecase);
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+  
+  String _horarioInicio = "";
+  String get horarioInicio => _horarioInicio;
+  
+  String _horarioFim = "";
+  String get horarioFim => _horarioFim;
+
+  List<int> _selecionados  = [];
+  List<int> get selecionados => _selecionados;
+
+  Future<void> fillAgenda() async{
+    _selecionados = agenda?.diasTrabalho ?? [];
+    _horarioInicio = agenda?.horarioInicio ?? _horarioInicio;
+    _horarioFim = agenda?.horarioFim ?? _horarioFim;
+
+    notifyListeners();
+  }
+
+  void orderDiasSelecionados(){
+    _selecionados.sort((a, b) => a.bitLength.compareTo(b.bitLength));
+  }
+  
+  void setHorarioInicio (String novoHorario){
+    _horarioInicio = novoHorario;
+    Logger().i("Horário selecionado: $_horarioInicio");
+    notifyListeners();
+  }
+
+  void setHorarioFim (String novoHorario){
+    _horarioFim = novoHorario;
+    Logger().i("Horário selecionado: $_horarioFim");
+    notifyListeners();
+  }
+
+  void addDiaSelecionado(int novoDia){
+    _selecionados = List.from(_selecionados)..add(novoDia);
+
+    orderDiasSelecionados();
+    notifyListeners();
+  }
+
+  void removeDiaSelecionado(int dia){
+    _selecionados = List.from(_selecionados)..removeWhere((diaAntigo) => dia == diaAntigo);
+    
+    orderDiasSelecionados();
+    notifyListeners();
+  }
+
+  
+  Agenda? _agenda;
+  Agenda? get agenda => _agenda;
+
+  Future<void> getAgenda() async{
+
+    final fetchedAgenda = await _getAgendaUsecase.call();
+
+    _agenda = fetchedAgenda;
+
+    notifyListeners();
+
+  }
+
+
+  Future<Agenda> buildUpdatedAgenda() async{
+    
+    return Agenda(diasTrabalho: _selecionados, horarioInicio: _horarioInicio, horarioFim: _horarioFim);
+  }  
+
+  Future<void> updateAgenda(Agenda agenda, BuildContext context) async{
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try{
+      await _updateAgendaUsecase.call(agenda);
+
+      _agenda = agenda;
+
+      if(context.mounted){
+        _mostrarFeedback(context, "Configurações salvas com sucesso! 💅", Colors.green);
+      }
+    } catch (e) {
+    _errorMessage = "Erro ao salvar: $e";
+    if (context.mounted) {
+      _mostrarFeedback(context, "Erro ao salvar configurações", Colors.red);
+    }
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
+  }
+
+}
+
+void _mostrarFeedback(BuildContext context, String mensagem, Color cor) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(mensagem, style: const TextStyle(fontWeight: FontWeight.bold)),
+      backgroundColor: cor,
+      behavior: SnackBarBehavior.floating, // Dá um ar mais moderno/mobile
+      duration: const Duration(seconds: 2),
+    ),
+  );
+}
