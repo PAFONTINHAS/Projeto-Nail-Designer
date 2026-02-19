@@ -30,19 +30,12 @@ class HomePage extends StatelessWidget {
           // Botão de Calendário que você já tinha
           IconButton(
             onPressed: () {
-               // Você pode abrir o datePicker aqui também se quiser
-            },
-            icon: const Icon(Icons.calendar_month, color: Color(0xFFEC489A)),
-          ),
-          // NOVO: Botão de Configurações
-          IconButton(
-            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ConfigPage()),
               );
             },
-            icon: const Icon(Icons.settings, color: Colors.grey),
+            icon: const Icon(Icons.calendar_month, color: Color(0xFFEC489A)),
           ),
         ],
       ),

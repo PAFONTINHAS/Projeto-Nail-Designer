@@ -27,6 +27,8 @@ export class AgendamentoService {
       diasTrabalho: data['diasTrabalho'],
       horarioInicio: data['horarioInicio'],
       horarioFim: data['horarioFim'],
+      agendaAtiva: data['agendaAtiva'],
+      datasBloqueadas: data['datasBloqueadas']
     };
 
     console.log('Configuração da agenda capturada com sucesso!');
@@ -50,6 +52,8 @@ export class AgendamentoService {
               diasTrabalho: data['diasTrabalho'],
               horarioInicio: data['horarioInicio'],
               horarioFim: data['horarioFim'],
+              agendaAtiva: data['agendaAtiva'],
+              datasBloqueadas: data['datasBloqueadas']
             };
 
             sub.next(configModel);

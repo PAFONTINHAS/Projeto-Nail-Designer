@@ -11,6 +11,7 @@ import { NgxMaskDirective } from "ngx-mask";
 import { AgendaConfig } from '../../shared/models/agenda_config_model';
 import { Subscription } from 'rxjs';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-agendamentos',
@@ -58,8 +59,6 @@ export class Agendamentos implements OnInit, OnDestroy {
 
   renderizarCalendario: boolean = true;
 
-
-
   async ngOnInit() {
     this.servicos = (await this.servicosService.getServicos()) as Servico[];
 
@@ -72,14 +71,14 @@ export class Agendamentos implements OnInit, OnDestroy {
           this.renderizarCalendario = false;
           this.changeDetectorRef.detectChanges();
 
-          setTimeout(() =>{
+          setTimeout(() => {
             this.renderizarCalendario = true;
             this.changeDetectorRef.detectChanges();
           }, 10);
         }
-        
+
         this.agendaConfig = config;
-    
+
         this.limparCampos();
         this.gerarHorarios();
         this.changeDetectorRef.detectChanges();
@@ -356,17 +355,30 @@ export class Agendamentos implements OnInit, OnDestroy {
   }
 
   filtroDeDatas = (d: Date | null): boolean => {
-    if (!this.agendaConfig || !d) return false;
-
+    const data = d || new Date();
     const hoje = new Date();
-
     hoje.setHours(0, 0, 0, 0);
 
-    if (d < hoje) return false;
+    // 1. Bloqueia se a agenda estiver desativada globalmente
+    if (!this.agendaConfig?.agendaAtiva) return false;
 
-    const diaSemana = (d || new Date()).getDay();
+    // 2. Bloqueia dias passados
+    if (data < hoje) return false;
 
-    this.changeDetectorRef.detectChanges();
-    return this.agendaConfig?.diasTrabalho.includes(diaSemana);
+    // 3. Bloqueia dias da semana (Segunda, Terça...)
+    const diaSemana = data.getDay();
+    if (!this.agendaConfig.diasTrabalho.includes(diaSemana)) return false;
+
+    // 4. Bloqueia Datas Específicas (Feriados/Folgas)
+    // Ajustando fuso para comparação de String ISO
+    const offset = data.getTimezoneOffset();
+    const dataAjustada = new Date(data.getTime() - offset * 60 * 1000);
+    const dataString = dataAjustada.toISOString().split('T')[0];
+
+    if (this.agendaConfig.datasBloqueadas?.includes(dataString)) {
+      return false;
+    }
+
+    return true;
   };
 }

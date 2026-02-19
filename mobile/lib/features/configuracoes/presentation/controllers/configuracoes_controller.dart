@@ -27,10 +27,19 @@ class ConfiguracoesController extends ChangeNotifier{
   List<int> _selecionados  = [];
   List<int> get selecionados => _selecionados;
 
+  List<String> _datasBloqueadas = [];
+  List<String> get datasBloqueadas => _datasBloqueadas;
+
+  bool _agendaAtiva = true;
+  bool get agendaAtiva => _agendaAtiva;
+
+
   Future<void> fillAgenda() async{
     _selecionados = agenda?.diasTrabalho ?? [];
     _horarioInicio = agenda?.horarioInicio ?? _horarioInicio;
     _horarioFim = agenda?.horarioFim ?? _horarioFim;
+    _datasBloqueadas = agenda?.datasBloqueadas ?? _datasBloqueadas;
+    _agendaAtiva = agenda?.agendaAtiva ?? _agendaAtiva;
 
     notifyListeners();
   }
@@ -65,6 +74,38 @@ class ConfiguracoesController extends ChangeNotifier{
     notifyListeners();
   }
 
+  void toggleAgendaAtiva(bool value){
+    _agendaAtiva = value;
+    notifyListeners();
+  }
+
+  void addDataBloqueada(DateTime date){
+
+    List<String> updatedDates = List.from(_datasBloqueadas);
+
+    String dataFormatada = date.toIso8601String().split('T')[0];
+
+    if(!_datasBloqueadas.contains(dataFormatada)){
+      
+      updatedDates.add(dataFormatada);
+    }
+
+    updatedDates.sort((a, b) => a.length.compareTo(b.length));
+
+    _datasBloqueadas = updatedDates;
+    notifyListeners();
+  }
+
+  void removeDataBloqueada(String date){
+    List<String> updatedDates = List.from(_datasBloqueadas);
+
+    updatedDates.remove(date);
+
+    _datasBloqueadas = updatedDates;
+
+    notifyListeners();
+
+  }
   
   Agenda? _agenda;
   Agenda? get agenda => _agenda;
@@ -82,7 +123,7 @@ class ConfiguracoesController extends ChangeNotifier{
 
   Future<Agenda> buildUpdatedAgenda() async{
     
-    return Agenda(diasTrabalho: _selecionados, horarioInicio: _horarioInicio, horarioFim: _horarioFim);
+    return Agenda(diasTrabalho: _selecionados, horarioInicio: _horarioInicio, horarioFim: _horarioFim, datasBloqueadas: datasBloqueadas, agendaAtiva: agendaAtiva);
   }  
 
   Future<void> updateAgenda(Agenda agenda, BuildContext context) async{

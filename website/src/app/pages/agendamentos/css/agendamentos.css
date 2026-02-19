@@ -167,3 +167,66 @@
   font-weight: bold;
 }
 
+
+/* Container do Aviso */
+.aviso-pausa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    margin: 40px auto;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+}
+
+/* Ícone do Lucide */
+.aviso-pausa i-lucide {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+    background: #fff0f6; /* Fundo rosinha bem claro pro ícone */
+    padding: 15px;
+    border-radius: 50%;
+}
+
+/* Título */
+.aviso-pausa h2 {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-family: 'Montserrat', sans-serif; /* Ou a fonte que você usa */
+}
+
+/* Texto de descrição */
+.aviso-pausa p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* Botão do WhatsApp */
+.btn-contato {
+    display: inline-flex;
+    align-items: center;
+    background-color: #ec489a;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(236, 72, 154, 0.3);
+}
+
+.btn-contato:hover {
+    background-color: #d63384;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(236, 72, 154, 0.4);
+    color: white;
+}
