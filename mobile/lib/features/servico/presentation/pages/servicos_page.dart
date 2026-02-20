@@ -241,25 +241,6 @@ class ServicosPage extends StatelessWidget {
                 child: const Text("Confirmar e Salvar", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
               ),
 
-
-            //  if(servico != null) 
-            //     Padding(
-            //       padding: EdgeInsets.all(30),
-            //       child: TextButton(
-            //         onPressed: () => _confirmarFinalizacao(context, servico),
-            //         child: Center(
-            //           child: const Text(
-            //             "Deletar Serviço",
-            //             textAlign: TextAlign.center,
-            //             style: TextStyle(
-            //               fontSize: 16,
-            //               fontWeight: FontWeight.bold,
-            //               color: Colors.pink,
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     )
             ],
           ),
         ),

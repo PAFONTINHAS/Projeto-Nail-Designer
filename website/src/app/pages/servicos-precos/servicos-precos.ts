@@ -27,16 +27,16 @@ export class ServicosPrecos implements OnInit {
   
   get alongamento_unhas (){
 
-    return this.servicos.filter(servico => servico.categoria == "Alongamento");
+    return this.servicos.filter(servico => servico.categoria == "Alongamento" && servico.servicoAtivo);
 
   }
 
   get manutencoes (){
-    return this.servicos.filter(servico => servico.categoria == "Manutencao");
+    return this.servicos.filter(servico => servico.categoria == "Manutencao" && servico.servicoAtivo);
   }
 
   get extras (){
-    return this.servicos.filter(servico => servico.categoria == "Extras");
+    return this.servicos.filter(servico => servico.categoria == "Extras" && servico.servicoAtivo);
   }
 
   readonly Layers = Layers;

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile/core/app/app_initializer.dart';
 import 'package:mobile/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile/features/auth/presentation/pages/splash_screen.dart';
 import 'package:mobile/features/home/presentation/pages/home_page.dart';
-import 'package:provider/provider.dart';
 
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppInitializer.conectToFirebase();
-
-  // runApp(const MyApp());
 
   final DependencyInjection dependencyInjection = DependencyInjection();
 

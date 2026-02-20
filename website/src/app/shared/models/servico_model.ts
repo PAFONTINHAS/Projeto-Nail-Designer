@@ -4,5 +4,6 @@ export interface Servico{
     preco:number;
     duracao:number;
     categoria:string;
+    servicoAtivo:boolean;
 }
 
