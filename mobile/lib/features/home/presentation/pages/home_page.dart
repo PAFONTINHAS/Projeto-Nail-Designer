@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/home/presentation/widgets/empty_list_widget.dart';
-import 'package:mobile/features/configuracoes/presentation/pages/config_page.dart';
+import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
 import 'package:mobile/features/home/presentation/widgets/agendamento_card_widget.dart';
 import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
@@ -9,123 +10,148 @@ import 'package:mobile/features/agendamento/presentation/controllers/agendamento
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final controller = context.watch<AgendamentoController>();
-    final agendamentos = controller.agendamentosDataSelecionada;
-    final String dataVisualizada = "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}";
-    final bool isToday = controller.dataVisualizada.day == DateTime.now().day;
+  // home_page.dart
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Cinza bem clarinho de fundo
-      appBar: AppBar(
-        title: const Text(
-          "Minha Agenda",
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: false,
-        actions: [
-          // Botão de Calendário que você já tinha
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ConfigPage()),
-              );
-            },
-            icon: const Icon(Icons.calendar_month, color: Color(0xFFEC489A)),
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. Resumo do Dia
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFEC489A), Color(0xFFD63384)],
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isToday ? "Hoje" : dataVisualizada,
+@override
+Widget build(BuildContext context) {
+  final controller = context.watch<AgendamentoController>();
+  final String dataVisualizada = "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}";
 
-                        style: TextStyle(color: Colors.white70, fontSize: 16),
-                      ),
-                      Text(
-                        "${agendamentos.length} Agendamentos",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Icon(Icons.auto_awesome, color: Colors.white, size: 40),
-                ],
-              ),
+  return Scaffold(
+    backgroundColor: const Color(0xFFF8F9FA),
+    body: CustomScrollView( // Usando CustomScrollView para um efeito de scroll mais fluido
+      slivers: [
+        // 1. TÍTULO E HEADER PERSONALIZADO
+        SliverAppBar(
+          expandedHeight: 120.0,
+          floating: false,
+          pinned: true,
+          elevation: 0,
+          backgroundColor: Colors.white,
+          flexibleSpace: FlexibleSpaceBar(
+            titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+            title: const Text(
+              "Studio Natália", 
+              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
+        ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  isToday ? "Hoje" : dataVisualizada,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                
+                // 2. GRID DE AÇÕES RÁPIDAS (Onde entram Serviços e Agenda)
+                const Text("Gerenciamento", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                // const SizedBox(height: 15),
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 3, // 3 colunas para caber Relatórios depois
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 15,
+                  children: [
+                    _buildMenuCard(
+                      context, 
+                      "Agenda", 
+                      Icons.calendar_month, 
+                      const Color(0xFFEC489A),
+                      () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ConfigPage())),
+                    ),
+                    _buildMenuCard(
+                      context, 
+                      "Serviços", 
+                      Icons.apps, 
+                      Colors.purpleAccent,
+                      () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ServicosPage())), // Página que vamos criar
+                    ),
+                    _buildMenuCard(
+                      context, 
+                      "Relatórios", 
+                      Icons.bar_chart_rounded, 
+                      Colors.blueAccent,
+                      null, // Espaço para o futuro
+                      isLocked: true, // Visual de "em breve"
+                    ),
+                  ],
                 ),
-                TextButton.icon(
-                  onPressed: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: controller.dataVisualizada,
-                      firstDate: DateTime.now().subtract(
-                        const Duration(days: 365),
-                      ),
-                      lastDate: DateTime.now().add(const Duration(days: 365)),
-                    );
-                    if (date != null) {
-                      controller.setDataVisualizada(date);
-                    }
-                  },
-                  icon: const Icon(Icons.edit_calendar, size: 20),
-                  label: const Text("Mudar data"),
+
+                // const SizedBox(height: 30),
+
+                // 3. SELETOR DE DATA PARA AGENDAMENTOS
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Próximos Clientes", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text("Visualizando dia $dataVisualizada", style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                      ],
+                    ),
+                    TextButton.icon(
+                      onPressed: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: controller.dataVisualizada,
+                          firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                          lastDate: DateTime.now().add(const Duration(days: 365)),
+                        );
+                        if (date != null) controller.setDataVisualizada(date);
+                      },
+                      icon: const Icon(Icons.filter_list, color: Color(0xFFEC489A)),
+                      label: const Text("Mudar Data", style: TextStyle(color: Color(0xFFEC489A))),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
+        ),
 
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Text(
-              "Próximos Clientes",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        // 4. LISTA DE AGENDAMENTOS (SliverList para performance)
+        const SliverFillRemaining(
+          hasScrollBody: true,
+          child: AgendamentosListWidget(),
+        ),
+      ],
+    ),
+  );
+}
+
+  Widget _buildMenuCard(BuildContext context, String title, IconData icon, Color color, VoidCallback? onTap, {bool isLocked = false}) {
+  return InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(20),
+    child: Opacity(
+      opacity: isLocked ? 0.5 : 1.0,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+              child: Icon(icon, color: color, size: 28),
             ),
-          ),
-
-          const AgendamentosListWidget(),
-        ],
+            const SizedBox(height: 8),
+            Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black87)),
+            if (isLocked) const Text("Breve", style: TextStyle(fontSize: 9, color: Colors.grey)),
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class AgendamentosListWidget extends StatelessWidget {
@@ -136,18 +162,16 @@ class AgendamentosListWidget extends StatelessWidget {
     return Selector<AgendamentoController, List<AgendamentoEntity>>(
       selector: (_, controller) => controller.agendamentosDataSelecionada,
       builder: (context, agendamentos, _) {
-        return Expanded(
-          child: agendamentos.isEmpty
-              ? const EmptyListWidget()
-              : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: agendamentos.length,
-                  itemBuilder: (context, index) {
-                    final agendamento = agendamentos[index];
-                    return AgendamentoCard(agendamento: agendamento);
-                  },
-                ),
-        );
+       return agendamentos.isEmpty
+            ? const EmptyListWidget()
+            : ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: agendamentos.length,
+                itemBuilder: (context, index) {
+                  final agendamento = agendamentos[index];
+                  return AgendamentoCard(agendamento: agendamento);
+                },
+              );
       },
     );
   }
