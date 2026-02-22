@@ -26,6 +26,37 @@ class AgendamentoRemoteDatasourceImpl implements AgendamentoRemoteDatasource{
   }
 
   @override
+  Future<List<AgendamentoEntity>> getAgendamentosFromMonth(int year, int month) async{
+
+    try{
+
+      final monthStart = DateTime(year, month, 1);
+      final nextMonth = DateTime(monthStart.year, monthStart.month + 1, 1);
+
+      final monthTimestamp = Timestamp.fromDate(monthStart);
+      final nextMonthTimestamp = Timestamp.fromDate(nextMonth);
+
+
+      Query query = _firestore
+          .collection('agendamentos')
+          .where('data', isGreaterThanOrEqualTo: monthTimestamp)
+          .where('data', isLessThan: nextMonthTimestamp);
+
+
+      final snapshots = await query.get();
+
+      final agendamentos = snapshots.docs.map((doc) =>
+        AgendamentoModel.fromFirestore(doc)
+      ).toList();
+
+      return agendamentos;
+    }catch(e){
+      throw Exception("Erro ao pegar agendamentos filtrados: $e");
+    }
+  
+  }
+
+  @override
   Future<void> atualizarStatus(String id, bool status) async{
     try{
       await _firestore.collection('agendamentos').doc(id).update({'finalizado': status});

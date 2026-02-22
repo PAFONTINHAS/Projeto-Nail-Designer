@@ -81,18 +81,27 @@ Widget build(BuildContext context) {
                         
                         final relatorioFieldsController = context.read<RelatorioFieldsController>();
                         final relatorioController = context.read<RelatorioController>();
-
-                        final agendamentos = context.read<AgendamentoController>().agendamentos;
+                        final agendamentoController = context.read<AgendamentoController>();
+                        final agendamentos = agendamentoController.agendamentos;
                         final servicos = context.read<ServicoController>().servicos.values.toList();
                         
                         relatorioFieldsController.updateData(agendamentos);
                         relatorioFieldsController.calcularDistribuicaoPorCategoria(servicos);
 
-                        final newRelatorio = await relatorioFieldsController.verifyAndConsolidatePreviousMonth(todosAgendamentos: agendamentos, todosServicos: servicos);
+                        final newRelatorio = await relatorioFieldsController
+                            .verifyAndConsolidatePreviousMonth(
+                              todosAgendamentos: agendamentos,
+                              todosServicos: servicos,
+                              agendamentoController: agendamentoController,
+                            );
 
                         if(newRelatorio != null){
-                          
+
+                          await relatorioController.addRelatorio(newRelatorio);
+
                         }
+
+                        if(!context.mounted) return;
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const RelatoriosPage()));
 
                       }  // Página que vamos criar

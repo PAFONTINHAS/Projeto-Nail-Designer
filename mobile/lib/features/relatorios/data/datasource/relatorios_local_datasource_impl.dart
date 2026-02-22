@@ -10,6 +10,7 @@ class RelatoriosLocalDatasourceImpl implements RelatoriosLocalDatasource{
     return await SharedPreferences.getInstance();
   }
   
+  @override
   Future<void> clearLocalData(String location) async{
 
     final prefs = await _getPrefs();

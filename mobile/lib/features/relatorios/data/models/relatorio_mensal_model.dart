@@ -43,5 +43,28 @@ class RelatorioMensalModel extends RelatorioMensal {
     );
   }
 
+  factory RelatorioMensalModel.fromRelatorioMensal(RelatorioMensal relatorio){
+    return RelatorioMensalModel(
+      id: relatorio.id,
+      ticketMedio: relatorio.ticketMedio,
+      clientesAtendidos: relatorio.clientesAtendidos,
+      totalAtendimentos: relatorio.totalAtendimentos,
+      faturamentoRealizado: relatorio.faturamentoRealizado,
+      faturamentoPorCategoria: relatorio.faturamentoPorCategoria,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'ticketMedio': ticketMedio,
+      'totalAtendimentos': totalAtendimentos,
+      'clientesAtendidos': clientesAtendidos,
+      'faturamentoRealizado': faturamentoRealizado,
+      'faturamentoPorCategoria': faturamentoPorCategoria,
+    };
+  }
+  
+
 
 }

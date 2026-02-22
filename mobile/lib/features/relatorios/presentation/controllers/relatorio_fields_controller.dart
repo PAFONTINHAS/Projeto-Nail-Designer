@@ -1,8 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/features/servico/domain/entities/servico.dart';
+import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/relatorios/domain/entities/relatorio_mensal.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
+import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
 
 
 class RelatorioFieldsController extends ChangeNotifier {
@@ -50,34 +52,53 @@ class RelatorioFieldsController extends ChangeNotifier {
   Future<RelatorioMensal?> verifyAndConsolidatePreviousMonth({
     required List<AgendamentoEntity> todosAgendamentos,
     required List<Servico> todosServicos,
+    required AgendamentoController agendamentoController,
   }) async{
 
     final agora = DateTime.now();
     final mesAnteriorDate = DateTime(agora.year, agora.month - 1, 1);
     final String idMesAnterior = "${mesAnteriorDate.year}-${mesAnteriorDate.month.toString().padLeft(2, '0')}";
-    
+
     if(_historicoRelatorios.containsKey(idMesAnterior)) return null;
 
-    final agendamentosMesAnterior = todosAgendamentos.where((a) =>
-        a.data.year == mesAnteriorDate.year &&
-        a.data.month == mesAnteriorDate.month,
-      )
-      .toList();
-    
-    final totalAtendimentosRealizados = agendamentosMesAnterior.where((agendamento) => agendamento.finalizado).length;
+    final agendamentosMesAnterior = await agendamentoController.getAgendamentosFromMonth(_mesReferencia.year, _mesReferencia.month);
+    final List<AgendamentoEntity> atendimentosRealizados = agendamentosMesAnterior.where((agendamento) => agendamento.finalizado).toList();
+
+    final totalAtendimentosRealizados = atendimentosRealizados.length;
 
     if(agendamentosMesAnterior.isEmpty) return null;
+
+    final double faturamentoRealizado = agendamentosMesAnterior
+      .where((a) => a.finalizado == true)
+      .fold(0, (soma, a) => soma + a.valorTotal);
+
+    final clientesAtendidos = agendamentosMesAnterior
+      .map((agendamento) => agendamento.contatoCliente.trim().toLowerCase())
+      .toSet()
+      .length;
+
+    double ticketMedio = calculateTicketMedio(atendimentosRealizados);
 
     return RelatorioMensal(
       id: idMesAnterior,
       ticketMedio: ticketMedio,
       clientesAtendidos: clientesAtendidos,
-      totalAtendimentos: totalAtendimentosRealizados ,
+      totalAtendimentos: totalAtendimentosRealizados,
       faturamentoRealizado: faturamentoRealizado,
-      faturamentoPorCategoria: calcularDistribuicaoPorCategoria(todosServicos),
+      faturamentoPorCategoria: calcularDistribuicaoPorCategoria(todosServicos, agendamentosFromMonth: agendamentosMesAnterior),
     );
   }
+  
 
+  double calculateTicketMedio(List<AgendamentoEntity> atendimentos){
+    
+    if (atendimentos.isEmpty) return 0.0;
+
+    double totalCofre = atendimentos.fold(0, (soma, a) => soma + a.valorTotal);
+    
+    return totalCofre / atendimentos.length;
+
+  }
 
 
   void changeMonth(int offset){
@@ -116,9 +137,9 @@ class RelatorioFieldsController extends ChangeNotifier {
 
   // 2. Faturamento Previsto (O que ainda vai acontecer e não foi finalizado)
   double get faturamentoPrevisto {
-    final agora = DateTime.now();
+    // final agora = DateTime.now();
     return agendamentosFiltrados
-        .where((a) => a.finalizado == false && a.data.isAfter(agora))
+        .where((a) => a.finalizado == false)
         .fold(0, (soma, a) => soma + a.valorTotal);
   }
 
@@ -145,7 +166,7 @@ class RelatorioFieldsController extends ChangeNotifier {
 
   double get faturamentoMesAnterior {
 
-    if(isPreviousMonth){
+    if(isPreviousMonth || isCurrentMonth){
 
       final anterior = DateTime(_mesReferencia.year, _mesReferencia.month - 1, 1);
       final mesAnterior = "${anterior.year.toString()}-${anterior.month.toString().padLeft(2, '0')}";
@@ -157,7 +178,6 @@ class RelatorioFieldsController extends ChangeNotifier {
     }
 
     final mesAnterior = DateTime(_mesReferencia.year, _mesReferencia.month - 1, 1);
-
     return _todosAgendamentos.where((a) {
       return a.finalizado && 
             a.data.month == mesAnterior.month && 
@@ -168,12 +188,11 @@ class RelatorioFieldsController extends ChangeNotifier {
 
   double get crescimentoComparativo {
 
-    final mesEscolhido = DateTime(_mesReferencia.year, _mesReferencia.month);
-    final mesAnterior = mesEscolhido.subtract(Duration(days: 30));
+    final mesEscolhido = DateTime(_mesReferencia.year, _mesReferencia.month, 1);
+    final mesAnterior = DateTime(mesEscolhido.year, mesEscolhido.month - 1, 1);
 
     final mesEscolhidoId = "${mesEscolhido.year.toString()}-${mesEscolhido.month.toString().padLeft(2, '0')}";
     final mesAnteriorId = "${mesAnterior.year.toString()}-${mesAnterior.month.toString().padLeft(2, '0')}";
-
 
     if(isPreviousMonth){
       
@@ -201,10 +220,12 @@ class RelatorioFieldsController extends ChangeNotifier {
 
 
 
-  Map<String, double> calcularDistribuicaoPorCategoria(List<Servico> todosOsServicosDisponiveis) {
+  Map<String, double> calcularDistribuicaoPorCategoria(List<Servico> todosOsServicosDisponiveis, {List<AgendamentoEntity>? agendamentosFromMonth}) {
+
+    final agendamentos = agendamentosFromMonth ?? agendamentosFiltrados;
     final Map<String, double> distribuicao = {};
 
-    for (var agendamento in agendamentosFiltrados) {
+    for (var agendamento in agendamentos) {
       // Só contamos o que foi finalizado ou o que está previsto (depende da sua escolha)
       // Para relatórios de performance, geralmente usamos apenas os finalizados
       if (!agendamento.finalizado) continue;

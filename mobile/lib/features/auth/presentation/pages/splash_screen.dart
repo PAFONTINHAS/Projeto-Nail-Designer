@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
-import 'package:mobile/features/agenda/presentation/controllers/agenda_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile/features/home/presentation/pages/home_page.dart';
+import 'package:mobile/features/agenda/presentation/controllers/agenda_controller.dart';
+import 'package:mobile/features/servico/presentation/controllers/servico_controller.dart';
 import 'package:mobile/features/relatorios/presentation/controllers/relatorio_controller.dart';
 import 'package:mobile/features/relatorios/presentation/controllers/relatorio_fields_controller.dart';
-import 'package:mobile/features/servico/presentation/controllers/servico_controller.dart';
-import 'package:provider/provider.dart';
+import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

@@ -32,7 +32,9 @@ class RelatoriosRemoteDatasourceImpl implements RelatoriosRemoteDatasource {
   Future<void> addRelatorio(RelatorioMensal relatorio) async{
 
     try{
-      await _firestore.collection(collection).doc(relatorio.id).set(relatorio.toMap());
+      final relatorioModel = RelatorioMensalModel.fromRelatorioMensal(relatorio);
+
+      await _firestore.collection(collection).doc(relatorio.id).set(relatorioModel.toMap());
     } catch(e){
       Logger().e("Erro ao adicionar relatorio: $e");
     }

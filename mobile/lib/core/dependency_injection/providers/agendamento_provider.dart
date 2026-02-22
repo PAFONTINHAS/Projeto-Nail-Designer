@@ -3,6 +3,7 @@ import 'package:mobile/features/agendamento/data/datasource/agendamento_remote_d
 import 'package:mobile/features/agendamento/data/repository/agendamento_repository_impl.dart';
 import 'package:mobile/features/agendamento/domain/repository/agendamento_repository.dart';
 import 'package:mobile/features/agendamento/domain/usecases/atualizar_status_usecase.dart';
+import 'package:mobile/features/agendamento/domain/usecases/get_agendamentos_from_month_usecase.dart';
 import 'package:mobile/features/agendamento/domain/usecases/listen_agendamentos_usecase.dart';
 import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
 import  'package:provider/provider.dart';
@@ -17,9 +18,10 @@ class AgendamentoProvider {
 
   static final ListenAgendamentosUsecase listenAgendamentosUsecase = ListenAgendamentosUsecase(repository: repository);
   static final AtualizarStatusUsecase atualizarStatusUsecase = AtualizarStatusUsecase(repository: repository);
+  static final GetAgendamentosFromMonthUsecase getAgendamentosFromMonthUsecase = GetAgendamentosFromMonthUsecase(repository);
 
   static final List<SingleChildWidget> providers = [
-    ChangeNotifierProvider(create: (_) => AgendamentoController(listenAgendamentosUsecase, atualizarStatusUsecase))
+    ChangeNotifierProvider(create: (_) => AgendamentoController(listenAgendamentosUsecase, atualizarStatusUsecase, getAgendamentosFromMonthUsecase))
   ];
 
 }
