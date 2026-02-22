@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/relatorios/domain/entities/relatorio_mensal.dart';
+import 'package:mobile/features/relatorios/domain/usecases/add_relatorio_usecase.dart';
 import 'package:mobile/features/relatorios/domain/usecases/get_relatorios_mensais_usecase.dart';
 
 class RelatorioController extends ChangeNotifier{
   
   final GetRelatoriosMensaisUsecase _getRelatoriosMensaisUsecase;
+  final AddRelatorioUsecase _addRelatorioUsecase;
 
-  RelatorioController(this._getRelatoriosMensaisUsecase);
+  RelatorioController(this._getRelatoriosMensaisUsecase, this._addRelatorioUsecase);
 
   Map<String, RelatorioMensal> relatorios = {};
 
@@ -37,6 +39,24 @@ class RelatorioController extends ChangeNotifier{
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> addRelatorio(RelatorioMensal relatorio) async{
+
+    _isLoading = true;
+    _errorMessage = null;
+
+    notifyListeners();
+
+    try{
+      await _addRelatorioUsecase.call(relatorio);
+
+      relatorios[relatorio.id] = relatorio;
+
+    }catch(e){
+      _errorMessage = "Erro ao adicionar relatorio";
+      logger.i("Erro ao adicionar relatorio: $e");
+    }
   }
 
 

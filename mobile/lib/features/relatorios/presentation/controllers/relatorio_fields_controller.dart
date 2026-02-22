@@ -47,6 +47,38 @@ class RelatorioFieldsController extends ChangeNotifier {
     }).toList();
   }
 
+  Future<RelatorioMensal?> verifyAndConsolidatePreviousMonth({
+    required List<AgendamentoEntity> todosAgendamentos,
+    required List<Servico> todosServicos,
+  }) async{
+
+    final agora = DateTime.now();
+    final mesAnteriorDate = DateTime(agora.year, agora.month - 1, 1);
+    final String idMesAnterior = "${mesAnteriorDate.year}-${mesAnteriorDate.month.toString().padLeft(2, '0')}";
+    
+    if(_historicoRelatorios.containsKey(idMesAnterior)) return null;
+
+    final agendamentosMesAnterior = todosAgendamentos.where((a) =>
+        a.data.year == mesAnteriorDate.year &&
+        a.data.month == mesAnteriorDate.month,
+      )
+      .toList();
+    
+    final totalAtendimentosRealizados = agendamentosMesAnterior.where((agendamento) => agendamento.finalizado).length;
+
+    if(agendamentosMesAnterior.isEmpty) return null;
+
+    return RelatorioMensal(
+      id: idMesAnterior,
+      ticketMedio: ticketMedio,
+      clientesAtendidos: clientesAtendidos,
+      totalAtendimentos: totalAtendimentosRealizados ,
+      faturamentoRealizado: faturamentoRealizado,
+      faturamentoPorCategoria: calcularDistribuicaoPorCategoria(todosServicos),
+    );
+  }
+
+
 
   void changeMonth(int offset){
 

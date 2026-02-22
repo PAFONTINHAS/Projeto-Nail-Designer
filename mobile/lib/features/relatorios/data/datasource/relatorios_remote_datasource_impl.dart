@@ -11,24 +11,30 @@ class RelatoriosRemoteDatasourceImpl implements RelatoriosRemoteDatasource {
 
   @override
   Future<Map<String, RelatorioMensal>> getRelatoriosMensais() async{
-    // final String mesId = "${agendamento.data.year}-${agendamento.data.month}";
-
-    final snapshots = await _firestore.collection(collection).get();
     
-    final Map<String, RelatorioMensal> relatorios = Map.fromEntries(
-      snapshots.docs.map((doc) =>MapEntry(doc.id, RelatorioMensalModel.fromSnapshot(doc)))
-    );
+    try{
 
-    return relatorios;
+      final snapshots = await _firestore.collection(collection).get();
+      
+      final Map<String, RelatorioMensal> relatorios = Map.fromEntries(
+        snapshots.docs.map((doc) =>MapEntry(doc.id, RelatorioMensalModel.fromSnapshot(doc)))
+      );
+
+      return relatorios;
+    }catch(e){
+      Logger().e("Erro ao pegar relatorios: $e");
+
+      throw Exception("Erro ao pegar relatórios: $e");
+    }
   }
 
   @override
-  Future<void> addNewRelatorio(RelatorioMensal relatorio) async{
+  Future<void> addRelatorio(RelatorioMensal relatorio) async{
 
     try{
       await _firestore.collection(collection).doc(relatorio.id).set(relatorio.toMap());
     } catch(e){
-      Logger().e("Erro ao atualizar relatorio: $e");
+      Logger().e("Erro ao adicionar relatorio: $e");
     }
   }
 

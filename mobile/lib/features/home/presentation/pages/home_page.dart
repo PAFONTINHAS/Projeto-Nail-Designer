@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/relatorios/presentation/controllers/relatorio_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
 import 'package:mobile/features/home/presentation/widgets/empty_list_widget.dart';
@@ -76,13 +77,22 @@ Widget build(BuildContext context) {
                       "Relatórios", 
                       Icons.bar_chart_rounded, 
                       Colors.blueAccent,
-                      () {
+                      () async{
                         
+                        final relatorioFieldsController = context.read<RelatorioFieldsController>();
+                        final relatorioController = context.read<RelatorioController>();
+
                         final agendamentos = context.read<AgendamentoController>().agendamentos;
                         final servicos = context.read<ServicoController>().servicos.values.toList();
                         
-                        context.read<RelatorioFieldsController>().updateData(agendamentos);
-                        context.read<RelatorioFieldsController>().calcularDistribuicaoPorCategoria(servicos);
+                        relatorioFieldsController.updateData(agendamentos);
+                        relatorioFieldsController.calcularDistribuicaoPorCategoria(servicos);
+
+                        final newRelatorio = await relatorioFieldsController.verifyAndConsolidatePreviousMonth(todosAgendamentos: agendamentos, todosServicos: servicos);
+
+                        if(newRelatorio != null){
+                          
+                        }
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const RelatoriosPage()));
 
                       }  // Página que vamos criar

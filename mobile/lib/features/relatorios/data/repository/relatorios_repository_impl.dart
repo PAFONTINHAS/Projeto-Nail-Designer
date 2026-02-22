@@ -27,6 +27,36 @@ class RelatoriosRepositoryImpl implements RelatoriosRepository {
 
   }
 
+  @override
+  Future<void> addRelatorio(RelatorioMensal relatorio) async{
+    
+    await remoteDatasource.addRelatorio(relatorio);
+
+    final localRelatorios = await localDatasource.getRelatorios();
+
+    if(localRelatorios == null){
+      
+      Map<String, RelatorioMensal> relatorios = {
+        relatorio.id: relatorio
+      };
+
+      await localDatasource.storeRelatorios(relatorios);
+
+      return;
+    }
+
+    localRelatorios[relatorio.id] = relatorio;
+
+    await localDatasource.clearLocalData("cache_relatorios_mensais");
+
+    await localDatasource.storeRelatorios(localRelatorios);
+  
+  }
+
+
+
+
+
 
 
 
