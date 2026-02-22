@@ -20,15 +20,15 @@ class RelatorioMensalModel extends RelatorioMensal {
 
     final Map<String, double> fatuamentoPorCategoria = faturamentoPorCategoriaRaw.map((key, value)=> MapEntry(
       key,
-      (value is int) ? value.toDouble() : (value as double) 
+      (value is int) ? tranformIntoOneDecimal(value.toDouble()) : (value as double) 
     ));
 
     final faturamentoRealizado = isInt(data['faturamentoRealizado'])
-        ? (data['faturamentoRealizado'] as int).toDouble()
+        ? tranformIntoOneDecimal((data['faturamentoRealizado'] as int).toDouble()) 
         : data['faturamentoRealizado'];
 
     final ticketMedio = isInt(data['ticketMedio'])
-        ? (data['ticketMedio'] as int).toDouble()
+        ? tranformIntoOneDecimal((data['ticketMedio'] as int).toDouble())
         : data['ticketMedio'];
 
     logger.i("Relatorio encontrado: $data");

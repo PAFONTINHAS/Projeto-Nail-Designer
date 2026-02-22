@@ -86,6 +86,8 @@ class CurrentMonthReport extends StatelessWidget {
       locale: 'pt_BR',
       symbol: 'R\$',
     );
+
+    final controller = context.read<RelatorioFieldsController>();
     return Column(
       children: [
         MainCard(),
@@ -125,6 +127,32 @@ class CurrentMonthReport extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 25),
+
+        if(controller.qtdPendentes > 0)
+          Container(
+            margin: const EdgeInsets.only(top: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.amber.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.amber.withOpacity(0.5)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.pending_actions, color: Colors.amber, size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    "Você tem ${controller.qtdPendentes} agendamentos passados ainda não finalizados.",
+                    style: const TextStyle(fontSize: 13, color: Colors.orange),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        const SizedBox(height: 25),
+
 
         // 3. GRÁFICOS (Visão Visual)
         const Text(

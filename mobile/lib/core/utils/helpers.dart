@@ -18,3 +18,10 @@ bool isInt(dynamic value){
 
   return false;
 }
+
+double tranformIntoOneDecimal(double value){
+
+  String formatedValue = value.toStringAsFixed(1);
+
+  return double.parse(formatedValue);
+}

@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/core/utils/helpers.dart';
 import 'package:mobile/features/servico/domain/entities/servico.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/relatorios/domain/entities/relatorio_mensal.dart';
@@ -61,10 +62,11 @@ class RelatorioFieldsController extends ChangeNotifier {
 
     if(_historicoRelatorios.containsKey(idMesAnterior)) return null;
 
-    final agendamentosMesAnterior = await agendamentoController.getAgendamentosFromMonth(_mesReferencia.year, _mesReferencia.month);
+    final agendamentosMesAnterior = await agendamentoController.getAgendamentosFromMonth(mesAnteriorDate.year, mesAnteriorDate.month);
     final List<AgendamentoEntity> atendimentosRealizados = agendamentosMesAnterior.where((agendamento) => agendamento.finalizado).toList();
 
     final totalAtendimentosRealizados = atendimentosRealizados.length;
+
 
     if(agendamentosMesAnterior.isEmpty) return null;
 
@@ -77,14 +79,22 @@ class RelatorioFieldsController extends ChangeNotifier {
       .toSet()
       .length;
 
+    logger.i('''
+      Atendimentos realizados: $totalAtendimentosRealizados
+      Atendimentos finalizados: $atendimentosRealizados
+      Atendimentos totais: ${agendamentosMesAnterior.map((a) => a.finalizado)}
+      Clientes Atendidos: $clientesAtendidos
+      Faturamento total: $faturamentoRealizado  
+    ''');
+
     double ticketMedio = calculateTicketMedio(atendimentosRealizados);
 
     return RelatorioMensal(
       id: idMesAnterior,
-      ticketMedio: ticketMedio,
+      ticketMedio: tranformIntoOneDecimal(ticketMedio),
       clientesAtendidos: clientesAtendidos,
       totalAtendimentos: totalAtendimentosRealizados,
-      faturamentoRealizado: faturamentoRealizado,
+      faturamentoRealizado: tranformIntoOneDecimal(faturamentoRealizado),
       faturamentoPorCategoria: calcularDistribuicaoPorCategoria(todosServicos, agendamentosFromMonth: agendamentosMesAnterior),
     );
   }
@@ -141,6 +151,14 @@ class RelatorioFieldsController extends ChangeNotifier {
     return agendamentosFiltrados
         .where((a) => a.finalizado == false)
         .fold(0, (soma, a) => soma + a.valorTotal);
+  }
+  
+  int get qtdPendentes{
+    final agora = DateTime.now();
+
+    return agendamentosFiltrados
+      .where((a) => !a.finalizado && a.data.isBefore(agora))
+      .length;
   }
 
   // 3. Faturamento Total (Projeção: Tudo que entrou + Tudo que vai entrar)
