@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
 import 'package:mobile/features/agendamento/domain/usecases/atualizar_status_usecase.dart';
 import 'package:mobile/features/agendamento/domain/usecases/listen_agendamentos_usecase.dart';
 
 class AgendamentoController extends ChangeNotifier{
 
-  final ListenAgendamentosUsecase _listenAgendamentosUsecase;
   final AtualizarStatusUsecase _atualizarStatusUsecase;
+  final ListenAgendamentosUsecase _listenAgendamentosUsecase;
 
   AgendamentoController(this._listenAgendamentosUsecase, this._atualizarStatusUsecase);
 
@@ -25,8 +26,6 @@ class AgendamentoController extends ChangeNotifier{
   List<AgendamentoEntity> get agendamentosDataSelecionada{
     final String dateKey = _formatDateKey(_dataVisualizada);
     final lista = _agendamentosPorDia[dateKey] ?? [];
-
-
     return lista.where((a) => !a.finalizado).toList();
   }
 
@@ -47,6 +46,11 @@ class AgendamentoController extends ChangeNotifier{
 
   }
 
+  List<AgendamentoEntity> get agendamentos{
+
+    return _agendamentosPorDia.values.expand((agendamento) => agendamento).toList();
+  }
+  
   Map<String, List<AgendamentoEntity>> _agendamentosPorDia = {};
   
 
@@ -72,14 +76,13 @@ class AgendamentoController extends ChangeNotifier{
 
         _agendamentosPorDia = novoMap;
 
+        _isLoading = false;
         notifyListeners();
       }, 
       onError: (error){
         _errorMessage = "Erro ao carregar agendamentos: ${error.toString()}";
       }
     );
-    _isLoading = false;
-    notifyListeners();
   }
 
 

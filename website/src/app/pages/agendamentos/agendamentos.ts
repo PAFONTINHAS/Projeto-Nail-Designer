@@ -11,7 +11,6 @@ import { NgxMaskDirective } from "ngx-mask";
 import { AgendaConfig } from '../../shared/models/agenda_config_model';
 import { Subscription } from 'rxjs';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
-import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-agendamentos',
@@ -138,17 +137,15 @@ export class Agendamentos implements OnInit, OnDestroy {
   }
 
   get alongamento_unhas() {
-    return this.servicos.filter(
-      (servico) => servico.categoria == 'Alongamento',
-    );
+    return this.servicos.filter((servico) => servico.categoria == 'Alongamento'  && servico.servicoAtivo);
   }
 
   get manutencoes() {
-    return this.servicos.filter((servico) => servico.categoria == 'Manutencao');
+    return this.servicos.filter((servico) => servico.categoria == 'Manutencao' && servico.servicoAtivo);
   }
 
   get extras() {
-    return this.servicos.filter((servico) => servico.categoria == 'Extras');
+    return this.servicos.filter((servico) => servico.categoria == 'Extras' && servico.servicoAtivo);
   }
 
   cliente: { nome: string; contato: string } = { nome: '', contato: '' };
@@ -160,7 +157,7 @@ export class Agendamentos implements OnInit, OnDestroy {
   categoriaAtiva: string = 'Alongamento';
 
   get servicosDisponiveis() {
-    return this.servicos.filter((s) => s.categoria == this.categoriaAtiva);
+    return this.servicos.filter((s) => s.categoria == this.categoriaAtiva && s.servicoAtivo);
   }
 
   toggleServico(servico: Servico) {

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
 import 'package:mobile/features/home/presentation/widgets/empty_list_widget.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
+import 'package:mobile/features/relatorios/presentation/pages/relatorios_page.dart';
 import 'package:mobile/features/home/presentation/widgets/agendamento_card_widget.dart';
+import 'package:mobile/features/servico/presentation/controllers/servico_controller.dart';
 import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
+import 'package:mobile/features/relatorios/presentation/controllers/relatorio_fields_controller.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -73,8 +76,16 @@ Widget build(BuildContext context) {
                       "Relatórios", 
                       Icons.bar_chart_rounded, 
                       Colors.blueAccent,
-                      null, // Espaço para o futuro
-                      isLocked: true, // Visual de "em breve"
+                      () {
+                        
+                        final agendamentos = context.read<AgendamentoController>().agendamentos;
+                        final servicos = context.read<ServicoController>().servicos.values.toList();
+                        
+                        context.read<RelatorioFieldsController>().updateData(agendamentos);
+                        context.read<RelatorioFieldsController>().calcularDistribuicaoPorCategoria(servicos);
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const RelatoriosPage()));
+
+                      }  // Página que vamos criar
                     ),
                   ],
                 ),

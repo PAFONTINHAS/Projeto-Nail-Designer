@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/features/agendamento/presentation/controllers/agendamento_controller.dart';
 import 'package:mobile/features/agenda/presentation/controllers/agenda_controller.dart';
 import 'package:mobile/features/home/presentation/pages/home_page.dart';
+import 'package:mobile/features/relatorios/presentation/controllers/relatorio_controller.dart';
+import 'package:mobile/features/relatorios/presentation/controllers/relatorio_fields_controller.dart';
 import 'package:mobile/features/servico/presentation/controllers/servico_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -26,15 +28,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _prepareUserApp() async{
 
-    final agendamentoController = context.read<AgendamentoController>();
     final servicoController = context.read<ServicoController>();
+    final agendamentoController = context.read<AgendamentoController>();
     final configuracoesController = context.read<ConfiguracoesController>();
+    final relatorioController = context.read<RelatorioController>();
+    final relatorioFieldsController = context.read<RelatorioFieldsController>();
 
-    await servicoController.getServicos();
-    await configuracoesController.getAgenda();
-    await agendamentoController.listenAgendamentos();
+    await Future.wait([
+      servicoController.getServicos(),
+      configuracoesController.getAgenda(),
+      agendamentoController.listenAgendamentos(),
+      relatorioController.getRelatorios()
+    ]);
+
     await configuracoesController.fillAgenda();
-
+    await relatorioFieldsController.updateRelatorios(relatorioController.relatorios);
 
     if(!mounted) return;
     
