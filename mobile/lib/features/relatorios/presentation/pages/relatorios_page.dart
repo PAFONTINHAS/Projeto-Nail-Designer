@@ -223,6 +223,33 @@ class CurrentMonthReport extends StatelessWidget {
             icon: Icons.trending_up,
           ),
         ),
+
+        Selector<RelatorioFieldsController, int>(
+          selector: (_, controller) => controller.faltas,
+          builder: (context, value, child) => InsightRow(
+            label: "Faltas",
+            value: "$value faltas",
+            icon: Icons.person_off,
+          ),
+        ),
+
+        Selector<RelatorioFieldsController, int>(
+          selector: (_, controller) => controller.cancelamentos,
+          builder: (context, value, child) => InsightRow(
+            label: "Cancelamentos",
+            value: "$value cancelamentos",
+            icon: Icons.cancel,
+          ),
+        ),
+
+        Selector<RelatorioFieldsController, double>(
+          selector: (_, controller) => controller.valorPerdidoFaltas,
+          builder: (context, value, child) => InsightRow(
+            label: "Valor total perdido",
+            value: precoFormatter.format(value),
+            icon: Icons.cancel,
+          ),
+        ),
       ],
     );
   }
@@ -301,6 +328,24 @@ class PreviousMonthReport extends StatelessWidget {
           label: "Ticket Médio",
           value: precoFormatter.format(relatorio.ticketMedio),
           icon: Icons.trending_up,
+        ),
+
+        InsightRow(
+            label: "Faltas",
+            value: "${relatorio.totalFaltas} faltas",
+            icon: Icons.person_off,
+          ),
+      
+        InsightRow(
+          label: "Cancelamentos",
+          value: "${relatorio.totalCancelamentos} cancelamentos",
+          icon: Icons.cancel,
+        ),
+      
+        InsightRow(
+          label: "Valor total perdido",
+          value: precoFormatter.format(relatorio.valorPerdidoFaltas),
+          icon: Icons.cancel,
         ),
       ],  
     );
