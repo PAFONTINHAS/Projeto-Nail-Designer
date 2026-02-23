@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/services/notification_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/home/presentation/pages/home_page.dart';
 import 'package:mobile/features/agenda/presentation/controllers/agenda_controller.dart';
@@ -29,10 +30,12 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _prepareUserApp() async{
 
     final servicoController = context.read<ServicoController>();
+    final relatorioController = context.read<RelatorioController>();
     final agendamentoController = context.read<AgendamentoController>();
     final configuracoesController = context.read<ConfiguracoesController>();
-    final relatorioController = context.read<RelatorioController>();
     final relatorioFieldsController = context.read<RelatorioFieldsController>();
+
+    await NotificationService().init();
 
     await Future.wait([
       servicoController.getServicos(),

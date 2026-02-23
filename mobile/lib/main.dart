@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/services/in_app_alert_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/core/app/app_initializer.dart';
 import 'package:mobile/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile/features/auth/presentation/pages/splash_screen.dart';
-import 'package:mobile/features/home/presentation/pages/home_page.dart';
 
 void main() async{
+
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: InAppAlertService.navigatorKey,
       title: 'Projeto Nail Designer',
       debugShowCheckedModeBanner: false,
       locale: const Locale('pt', 'BR'),

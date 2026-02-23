@@ -13,26 +13,27 @@ class AgendamentoModel extends AgendamentoEntity {
     required super.nomeCliente,
     required super.duracaoTotal,
     required super.contatoCliente,
+    required super.notificacaoEnviada
   });
 
   factory AgendamentoModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return AgendamentoModel(
       id: doc.id,
-      nomeCliente: data['clienteNome'] ?? '',
-      contatoCliente: data['contato'] ?? '',
-      data: (data['data'] as Timestamp).toDate(),
-      servicos: List<String>.from(data['servicos'] ?? []),
-      valorTotal: (data['valorTotal'] as num).toDouble(),
-      duracaoTotal: data['duracaoTotal'] ?? 0,
-      // finalizado: data['finalizado'],
-      status: data['status'] ?? ''
+      status            : data['status'] ?? '',
+      contatoCliente    : data['contato'] ?? '',
+      nomeCliente       : data['clienteNome'] ?? '',
+      duracaoTotal      : data['duracaoTotal'] ?? 0,
+      notificacaoEnviada: data['notificacaoEnviada'] ?? false,
+      data              : (data['data'] as Timestamp).toDate(),
+      valorTotal        : (data['valorTotal'] as num).toDouble(),
+      servicos          : List<String>.from(data['servicos'] ?? []),
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      'statis': status,
+      'status': status,
       'servicos': servicos,
       'valorTotal': valorTotal,
       'clienteNome': nomeCliente,

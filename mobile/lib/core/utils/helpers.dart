@@ -12,8 +12,6 @@ DateTime? toDate(dynamic timestamp) {
 
 bool isInt(dynamic value){
 
-  logger.i("Verificando valor: $value");
-  
   if(value is int) return true;
 
   return false;

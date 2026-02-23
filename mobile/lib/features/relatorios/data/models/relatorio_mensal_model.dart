@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile/core/utils/helpers.dart';
-import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobile/features/relatorios/domain/entities/relatorio_mensal.dart';
 
 class RelatorioMensalModel extends RelatorioMensal {
@@ -37,8 +36,6 @@ class RelatorioMensalModel extends RelatorioMensal {
     final valorPerdidoFaltas = isInt(data['valorPerdidoFaltas'])  
       ? tranformIntoOneDecimal((data['valorPerdidoFaltas'] as int).toDouble())
       : data['valorPerdidoFaltas'];
-
-    logger.i("Relatorio encontrado: $data");
 
     return RelatorioMensalModel(
       id: doc.id,

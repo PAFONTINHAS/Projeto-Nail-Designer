@@ -146,17 +146,24 @@ Widget _buildPopupMenu(BuildContext context) {
 
   Widget _buildServiceTag(String nome) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(6),
+        color: Colors.grey.shade100, // Fundo cinza bem clarinho
+        borderRadius: BorderRadius.circular(8),
+        // Sem borda preta/escura aqui!
       ),
       child: Text(
         nome,
-        style: const TextStyle(fontSize: 12, color: Colors.black54),
+        style: TextStyle(
+          fontSize: 11, 
+          fontWeight: FontWeight.w600,
+          color: Colors.grey.shade700, // Texto em cinza grafite
+        ),
       ),
     );
   }
+
+  
 
   void _confirmarStatus(BuildContext context, String status) {
     // Map de estilos para o Dialog

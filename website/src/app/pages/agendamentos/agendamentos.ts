@@ -217,7 +217,8 @@ export class Agendamentos implements OnInit, OnDestroy {
       valorTotal: this.totalPreco,
       clienteNome: nome,
       contato: contato, 
-      status: 'agendado'
+      status: 'agendado',
+      notificacaoEnviada: false
     };
 
     try {

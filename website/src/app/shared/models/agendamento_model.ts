@@ -6,5 +6,6 @@ export interface Agendamento{
     servicos: number[];
     duracaoTotal: number;
     // finalizado: boolean;
+    notificacaoEnviada: boolean;
     status: string;
 }
