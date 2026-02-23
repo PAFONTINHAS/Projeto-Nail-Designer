@@ -3,7 +3,7 @@ import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.d
 extension AgendamentoListExtension on List<AgendamentoEntity>{
 
   List<AgendamentoEntity> getFinishedAgendamnetos(){
-    return where((agendamento) => agendamento.finalizado).toList();
+    return where((agendamento) => agendamento.status == 'finalizado').toList();
   }
 
   double getTotalReceived() {

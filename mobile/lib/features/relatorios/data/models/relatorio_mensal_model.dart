@@ -11,6 +11,9 @@ class RelatorioMensalModel extends RelatorioMensal {
     required super.totalAtendimentos,
     required super.faturamentoRealizado,
     required super.faturamentoPorCategoria,
+    required super.totalCancelamentos,
+    required super.totalFaltas,
+    required super.valorPerdidoFaltas
   });
 
   factory RelatorioMensalModel.fromSnapshot(DocumentSnapshot doc){
@@ -31,6 +34,10 @@ class RelatorioMensalModel extends RelatorioMensal {
         ? tranformIntoOneDecimal((data['ticketMedio'] as int).toDouble())
         : data['ticketMedio'];
 
+    final valorPerdidoFaltas = isInt(data['valorPerdidoFaltas'])  
+      ? tranformIntoOneDecimal((data['valorPerdidoFaltas'] as int).toDouble())
+      : data['valorPerdidoFaltas'];
+
     logger.i("Relatorio encontrado: $data");
 
     return RelatorioMensalModel(
@@ -39,7 +46,10 @@ class RelatorioMensalModel extends RelatorioMensal {
       faturamentoRealizado: faturamentoRealizado,
       clientesAtendidos: data['clientesAtendidos'],
       totalAtendimentos: data['totalAtendimentos'],
-      faturamentoPorCategoria: fatuamentoPorCategoria
+      faturamentoPorCategoria: fatuamentoPorCategoria,
+      totalFaltas: data['totalFaltas'],
+      totalCancelamentos: data['totalCancelamentos'],
+      valorPerdidoFaltas: valorPerdidoFaltas
     );
   }
 
@@ -51,17 +61,24 @@ class RelatorioMensalModel extends RelatorioMensal {
       totalAtendimentos: relatorio.totalAtendimentos,
       faturamentoRealizado: relatorio.faturamentoRealizado,
       faturamentoPorCategoria: relatorio.faturamentoPorCategoria,
+      valorPerdidoFaltas: relatorio.valorPerdidoFaltas,
+      totalCancelamentos: relatorio.totalCancelamentos,
+      totalFaltas: relatorio.totalFaltas
     );
   }
 
   @override
   Map<String, dynamic> toMap() {
     return {
+      'totalFaltas': totalFaltas,
       'ticketMedio': ticketMedio,
       'totalAtendimentos': totalAtendimentos,
       'clientesAtendidos': clientesAtendidos,
+      'valorPerdidoFaltas': valorPerdidoFaltas,
+      'totalCancelamentos': totalCancelamentos,
       'faturamentoRealizado': faturamentoRealizado,
       'faturamentoPorCategoria': faturamentoPorCategoria,
+      
     };
   }
   

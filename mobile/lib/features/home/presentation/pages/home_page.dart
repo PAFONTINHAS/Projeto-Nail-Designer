@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/home/presentation/pages/agendamentos_atrasados_page.dart';
 import 'package:mobile/features/relatorios/presentation/controllers/relatorio_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
@@ -109,7 +110,33 @@ Widget build(BuildContext context) {
                   ],
                 ),
 
-                // const SizedBox(height: 30),
+
+                if (controller.agendamentosAtrasados.isNotEmpty)
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AgendamentosAtrasadosPage())), // Leva para a lista filtrada
+                    child: Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: Colors.red[50],
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: Colors.red[200]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.warning_amber_rounded, color: Colors.red),
+                          SizedBox(width: 12),
+                          Text(
+                            "Você tem ${controller.agendamentosAtrasados.length} pendências passadas!",
+                            style: TextStyle(color: Colors.red[900], fontWeight: FontWeight.bold),
+                          ),
+                          Spacer(),
+                          Icon(Icons.arrow_forward_ios, size: 14, color: Colors.red),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
 
                 // 3. SELETOR DE DATA PARA AGENDAMENTOS
                 Row(

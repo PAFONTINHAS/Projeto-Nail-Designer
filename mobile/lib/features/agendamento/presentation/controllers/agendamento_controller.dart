@@ -28,7 +28,19 @@ class AgendamentoController extends ChangeNotifier{
   List<AgendamentoEntity> get agendamentosDataSelecionada{
     final String dateKey = _formatDateKey(_dataVisualizada);
     final lista = _agendamentosPorDia[dateKey] ?? [];
-    return lista.where((a) => !a.finalizado).toList();
+    return lista.where((a) => a.status == 'agendado').toList();
+  }
+
+  List<AgendamentoEntity> get agendamentosAtrasados {
+    final agora = DateTime.now();
+
+    return agendamentos
+        .where(
+          (a) =>
+              a.data.isBefore(agora) &&
+              a.status == 'agendado'
+        )
+        .toList();
   }
 
   void setDataVisualizada(DateTime novaData){
@@ -109,9 +121,7 @@ class AgendamentoController extends ChangeNotifier{
 
   }
 
-
-
-  Future<void> atualizarStatus(String id, bool status) async {
+  Future<void> atualizarStatus(String id, String status) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();

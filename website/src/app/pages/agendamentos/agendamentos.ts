@@ -216,8 +216,8 @@ export class Agendamentos implements OnInit, OnDestroy {
       duracaoTotal: this.totalDuracao,
       valorTotal: this.totalPreco,
       clienteNome: nome,
-      contato: contato, // Depois você pega isso de um input ou Auth
-      finalizado: false,
+      contato: contato, 
+      status: 'agendado'
     };
 
     try {
@@ -230,17 +230,6 @@ export class Agendamentos implements OnInit, OnDestroy {
   }
 
   atualizarHorariosDisponiveis(agendamentosOcupados: any[]) {
-    // const gradePadrao = [
-    //   '09:00',
-    //   '10:00',
-    //   '11:00',
-    //   '12:00',
-    //   '13:00',
-    //   '14:00',
-    //   '15:00',
-    //   '16:00',
-    //   '17:00',
-    // ];
     const duracaoDesejada = this.totalDuracao;
 
     this.horarioStatus = this.gradeHorarios.map((horario) => {
@@ -379,3 +368,4 @@ export class Agendamentos implements OnInit, OnDestroy {
     return true;
   };
 }
+  

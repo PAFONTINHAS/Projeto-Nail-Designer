@@ -57,9 +57,9 @@ class AgendamentoRemoteDatasourceImpl implements AgendamentoRemoteDatasource{
   }
 
   @override
-  Future<void> atualizarStatus(String id, bool status) async{
+  Future<void> atualizarStatus(String id, String status) async{
     try{
-      await _firestore.collection('agendamentos').doc(id).update({'finalizado': status});
+      await _firestore.collection('agendamentos').doc(id).update({'status': status});
     }catch(e){
       Logger().e("Erro ao atualizar status: $e");
     }

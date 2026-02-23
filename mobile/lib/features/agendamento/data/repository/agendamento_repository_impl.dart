@@ -15,7 +15,7 @@ class AgendamentoRepositoryImpl implements AgendamentoRepository{
   }
 
   @override
-  Future<void> atualizarStatus(String id, bool status) async{
+  Future<void> atualizarStatus(String id, String status) async{
     return await remoteDatasource.atualizarStatus(id, status);
   }
 

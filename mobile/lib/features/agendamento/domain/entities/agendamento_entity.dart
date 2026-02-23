@@ -5,15 +5,17 @@ class AgendamentoEntity {
     required this.data,
     required this.servicos,
     required this.valorTotal,
-    required this.finalizado,
+    // required this.finalizado,
     required this.nomeCliente,
     required this.duracaoTotal,
     required this.contatoCliente,
+    required this.status
   });
 
   final String id;
   final DateTime data;
-  final bool finalizado;
+  final String status;
+  // final bool finalizado;
   final int duracaoTotal;
   final double valorTotal;
   final String nomeCliente;
@@ -26,12 +28,13 @@ class AgendamentoEntity {
 
       "id": id,
       "data": data,
-      "finalizado": finalizado,
-      "duracaoTotal": duracaoTotal,
+      "status": status,
+      "servicos": servicos,
+      // "finalizado": finalizado,
       "valorTotal": valorTotal,
       "nomeCliente": nomeCliente,
+      "duracaoTotal": duracaoTotal,
       "contatoCliente": contatoCliente,
-      "servicos": servicos,
     };
 
   }

@@ -6,7 +6,7 @@ class AtualizarStatusUsecase {
   
   AtualizarStatusUsecase({required this.repository});
 
-  Future<void> call(String id, bool status) async{
+  Future<void> call(String id, String status) async{
     return await repository.atualizarStatus(id, status);
   }
 }

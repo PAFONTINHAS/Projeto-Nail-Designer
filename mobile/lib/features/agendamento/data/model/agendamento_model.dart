@@ -6,8 +6,9 @@ class AgendamentoModel extends AgendamentoEntity {
   AgendamentoModel({
     required super.id,
     required super.data,
+    required super.status,
     required super.servicos,
-    required super.finalizado,
+    // required super.finalizado,
     required super.valorTotal,
     required super.nomeCliente,
     required super.duracaoTotal,
@@ -24,18 +25,20 @@ class AgendamentoModel extends AgendamentoEntity {
       servicos: List<String>.from(data['servicos'] ?? []),
       valorTotal: (data['valorTotal'] as num).toDouble(),
       duracaoTotal: data['duracaoTotal'] ?? 0,
-      finalizado: data['finalizado']
+      // finalizado: data['finalizado'],
+      status: data['status'] ?? ''
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      'clienteNome': nomeCliente,
-      'clienteContato': contatoCliente,
-      'data': Timestamp.fromDate(data),
+      'statis': status,
       'servicos': servicos,
       'valorTotal': valorTotal,
+      'clienteNome': nomeCliente,
       'duracaoTotal': duracaoTotal,
+      'clienteContato': contatoCliente,
+      'data': Timestamp.fromDate(data),
     };
   }
 }

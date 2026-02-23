@@ -37,6 +37,23 @@ class RelatorioFieldsController extends ChangeNotifier {
            (_mesReferencia.month > today.month && _mesReferencia.year < today.year); 
   }
 
+  double get valorPerdidoFaltas{
+    return agendamentosFiltrados
+      .where((a) => a.status == 'falta')
+      .fold(0, (soma, a) => soma + a.valorTotal);
+  }
+
+  int get faltas{
+    return agendamentosFiltrados
+      .where((a) => a.status == 'falta')
+      .length;
+  }
+
+  int get cancelamentos{
+    return agendamentosFiltrados
+      .where((a) => a.status == 'cancelado')
+      .length;
+  }
 
   DateTime _mesReferencia = DateTime.now();
   DateTime get mesReferencia => _mesReferencia;
@@ -63,7 +80,7 @@ class RelatorioFieldsController extends ChangeNotifier {
     if(_historicoRelatorios.containsKey(idMesAnterior)) return null;
 
     final agendamentosMesAnterior = await agendamentoController.getAgendamentosFromMonth(mesAnteriorDate.year, mesAnteriorDate.month);
-    final List<AgendamentoEntity> atendimentosRealizados = agendamentosMesAnterior.where((agendamento) => agendamento.finalizado).toList();
+    final List<AgendamentoEntity> atendimentosRealizados = agendamentosMesAnterior.where((agendamento) => agendamento.status == 'finalizado').toList();
 
     final totalAtendimentosRealizados = atendimentosRealizados.length;
 
@@ -71,18 +88,24 @@ class RelatorioFieldsController extends ChangeNotifier {
     if(agendamentosMesAnterior.isEmpty) return null;
 
     final double faturamentoRealizado = agendamentosMesAnterior
-      .where((a) => a.finalizado == true)
+      .where((a) => a.status == 'finalizado')
       .fold(0, (soma, a) => soma + a.valorTotal);
 
-    final clientesAtendidos = agendamentosMesAnterior
+    final clientesAtendidos = atendimentosRealizados
       .map((agendamento) => agendamento.contatoCliente.trim().toLowerCase())
       .toSet()
       .length;
 
+    final faltas = agendamentosMesAnterior.where((a) => a.status == 'falta').length;
+    
+    final cancelados = agendamentosMesAnterior.where((a) => a.status == 'cancelado').length;
+
+    double perda = agendamentosMesAnterior.where((a) => a.status == 'falta').fold(0, (soma, a) => soma + a.valorTotal);
+
     logger.i('''
       Atendimentos realizados: $totalAtendimentosRealizados
       Atendimentos finalizados: $atendimentosRealizados
-      Atendimentos totais: ${agendamentosMesAnterior.map((a) => a.finalizado)}
+      Atendimentos totais: ${agendamentosMesAnterior.map((a) => a.status == 'finalizado')}
       Clientes Atendidos: $clientesAtendidos
       Faturamento total: $faturamentoRealizado  
     ''');
@@ -96,6 +119,9 @@ class RelatorioFieldsController extends ChangeNotifier {
       totalAtendimentos: totalAtendimentosRealizados,
       faturamentoRealizado: tranformIntoOneDecimal(faturamentoRealizado),
       faturamentoPorCategoria: calcularDistribuicaoPorCategoria(todosServicos, agendamentosFromMonth: agendamentosMesAnterior),
+      totalFaltas: faltas,
+      totalCancelamentos: cancelados,
+      valorPerdidoFaltas: perda
     );
   }
   
@@ -141,7 +167,7 @@ class RelatorioFieldsController extends ChangeNotifier {
   // 1. Faturamento Realizado (O que já foi finalizado)
   double get faturamentoRealizado {
     return agendamentosFiltrados
-        .where((a) => a.finalizado == true)
+        .where((a) => a.status == 'finalizado')
         .fold(0, (soma, a) => soma + a.valorTotal);
   }
 
@@ -149,7 +175,7 @@ class RelatorioFieldsController extends ChangeNotifier {
   double get faturamentoPrevisto {
     // final agora = DateTime.now();
     return agendamentosFiltrados
-        .where((a) => a.finalizado == false)
+        .where((a) => a.status == 'agendado')
         .fold(0, (soma, a) => soma + a.valorTotal);
   }
   
@@ -157,7 +183,7 @@ class RelatorioFieldsController extends ChangeNotifier {
     final agora = DateTime.now();
 
     return agendamentosFiltrados
-      .where((a) => !a.finalizado && a.data.isBefore(agora))
+      .where((a) => a.status == 'agendado' && a.data.isBefore(agora))
       .length;
   }
 
@@ -167,7 +193,7 @@ class RelatorioFieldsController extends ChangeNotifier {
   // 4. Ticket Médio
   double get ticketMedio {
     // Pegamos apenas quem já foi atendido (finalizado)
-    final atendidos = agendamentosFiltrados.where((a) => a.finalizado).toList();
+    final atendidos = agendamentosFiltrados.where((a) => a.status == 'finalizado').toList();
     
     if (atendidos.isEmpty) return 0.0;
 
@@ -197,7 +223,7 @@ class RelatorioFieldsController extends ChangeNotifier {
 
     final mesAnterior = DateTime(_mesReferencia.year, _mesReferencia.month - 1, 1);
     return _todosAgendamentos.where((a) {
-      return a.finalizado && 
+      return a.status == 'finalizado' && 
             a.data.month == mesAnterior.month && 
             a.data.year == mesAnterior.year;
     }).fold(0.0, (soma, a) => soma + a.valorTotal);
@@ -246,7 +272,7 @@ class RelatorioFieldsController extends ChangeNotifier {
     for (var agendamento in agendamentos) {
       // Só contamos o que foi finalizado ou o que está previsto (depende da sua escolha)
       // Para relatórios de performance, geralmente usamos apenas os finalizados
-      if (!agendamento.finalizado) continue;
+      if (agendamento.status != 'finalizado') continue;
 
       for (var servicoId in agendamento.servicos) {
         // Buscamos a info do serviço para saber a categoria dele

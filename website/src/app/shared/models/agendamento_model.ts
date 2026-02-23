@@ -5,5 +5,6 @@ export interface Agendamento{
     data: Date;
     servicos: number[];
     duracaoTotal: number;
-    finalizado: boolean;
+    // finalizado: boolean;
+    status: string;
 }
