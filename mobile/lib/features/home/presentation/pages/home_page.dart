@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/agendamento/presentation/pages/agendamento_page.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
 import 'package:mobile/features/home/presentation/widgets/empty_list_widget.dart';
@@ -21,9 +22,19 @@ class HomePage extends StatelessWidget {
 Widget build(BuildContext context) {
   final controller = context.watch<AgendamentoController>();
   final String dataVisualizada = "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}";
+  return SafeArea(
+    top: false,
+    left: false,
+    right: false,
+    child: Scaffold(
 
-  return Scaffold(
     backgroundColor: const Color(0xFFF8F9FA),
+    floatingActionButton: FloatingActionButton.extended(
+      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AgendamentoPage())),
+      backgroundColor: const Color(0xFFEC489A), // O pink do Studio
+      icon: const Icon(Icons.add_task, color: Colors.white),
+      label: const Text("Novo Agendamento", style: TextStyle(color: Colors.white)),
+    ),
     body: CustomScrollView( // Usando CustomScrollView para um efeito de scroll mais fluido
       slivers: [
         // 1. TÍTULO E HEADER PERSONALIZADO
@@ -96,11 +107,7 @@ Widget build(BuildContext context) {
                               agendamentoController: agendamentoController,
                             );
 
-                        if(newRelatorio != null){
-
-                          await relatorioController.addRelatorio(newRelatorio);
-
-                        }
+                        if(newRelatorio != null) await relatorioController.addRelatorio(newRelatorio);
 
                         if(!context.mounted) return;
                         Navigator.push(context, MaterialPageRoute(builder: (_) => const RelatoriosPage()));
@@ -136,6 +143,7 @@ Widget build(BuildContext context) {
                     ),
                   ),
                   const SizedBox(height: 30),
+
 
 
                 // 3. SELETOR DE DATA PARA AGENDAMENTOS
@@ -177,7 +185,14 @@ Widget build(BuildContext context) {
         ),
       ],
     ),
-  );
+  ),
+
+
+    
+    
+    
+    );
+  
 }
 
   Widget _buildMenuCard(BuildContext context, String title, IconData icon, Color color, VoidCallback? onTap, {bool isLocked = false}) {

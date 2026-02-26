@@ -11,6 +11,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ServicosService } from '../../shared/services/servicos-service/servicos-service';
 import { Component, LOCALE_ID, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AgendamentoService } from '../../shared/services/agendamento-service/agendamento-service';
+import { Agendamento } from '../../shared/models/agendamento_model';
 
 @Component({
   selector: 'app-agendamentos',
@@ -277,17 +278,14 @@ export class Agendamentos implements OnInit, OnDestroy {
       const fimProposto = inicioProposto + duracaoDesejada;
 
       const conflito = agendamentosOcupados.some((agendamento) => {
+
         const dataAgendada: Date = agendamento.data.toDate();
-        const inicioOcupado =
-          dataAgendada.getHours() * 60 + dataAgendada.getMinutes();
+        const inicioOcupado = dataAgendada.getHours() * 60 + dataAgendada.getMinutes();
         const fimOcupado = inicioOcupado + agendamento.duracaoTotal;
 
-        const inicioSobreposto =
-          inicioProposto >= inicioOcupado && inicioProposto < fimOcupado;
-        const fimSobreposto =
-          fimProposto > inicioOcupado && fimProposto <= fimOcupado;
-        const englobaOcupado =
-          inicioProposto <= inicioOcupado && fimProposto >= fimOcupado;
+        const inicioSobreposto = inicioProposto >= inicioOcupado && inicioProposto < fimOcupado;
+        const fimSobreposto = fimProposto > inicioOcupado && fimProposto <= fimOcupado;
+        const englobaOcupado = inicioProposto <= inicioOcupado && fimProposto >= fimOcupado;
 
         return inicioSobreposto || fimSobreposto || englobaOcupado;
       });

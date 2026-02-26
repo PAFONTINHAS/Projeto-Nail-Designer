@@ -14,6 +14,9 @@ class ConfiguracoesController extends ChangeNotifier{
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  
+  Agenda? _agenda;
+  Agenda? get agenda => _agenda;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -33,6 +36,7 @@ class ConfiguracoesController extends ChangeNotifier{
   bool _agendaAtiva = true;
   bool get agendaAtiva => _agendaAtiva;
 
+  bool get haveAgendaChanged => verifyAgendaChanges();
 
   Future<void> fillAgenda() async{
     _selecionados = agenda?.diasTrabalho ?? [];
@@ -42,6 +46,37 @@ class ConfiguracoesController extends ChangeNotifier{
     _agendaAtiva = agenda?.agendaAtiva ?? _agendaAtiva;
 
     notifyListeners();
+  }
+
+  bool verifyAgendaChanges(){
+
+    if (agenda == null) return true;
+
+    if(_agendaAtiva != agenda!.agendaAtiva){
+      return true;
+    }
+
+    for(int i = 0; i < agenda!.diasTrabalho.length; i++){
+      if(_selecionados[i] != agenda!.diasTrabalho[i]){
+        return true;
+      }
+    }
+
+    if(_horarioInicio != agenda!.horarioInicio){
+      return true;
+    }
+
+    if(_horarioFim != agenda!.horarioFim){
+      return true;
+    }
+
+    for(int i = 0; i < agenda!.datasBloqueadas.length; i++){
+      if(_datasBloqueadas[i] != agenda!.datasBloqueadas[i]){
+        return true;
+      }
+    }
+
+    return false;
   }
 
   void orderDiasSelecionados(){
@@ -106,9 +141,6 @@ class ConfiguracoesController extends ChangeNotifier{
     notifyListeners();
 
   }
-  
-  Agenda? _agenda;
-  Agenda? get agenda => _agenda;
 
   Future<void> getAgenda() async{
 
@@ -123,8 +155,20 @@ class ConfiguracoesController extends ChangeNotifier{
 
   Future<Agenda> buildUpdatedAgenda() async{
     
-    return Agenda(diasTrabalho: _selecionados, horarioInicio: _horarioInicio, horarioFim: _horarioFim, datasBloqueadas: datasBloqueadas, agendaAtiva: agendaAtiva);
+    return Agenda(
+      diasTrabalho: _selecionados,
+      horarioInicio: _horarioInicio,
+      horarioFim: _horarioFim,
+      datasBloqueadas: datasBloqueadas,
+      agendaAtiva: agendaAtiva,
+    );
   }  
+
+  void locallyUpdateAgenda(Agenda updatedAgenda){
+
+    _agenda = updatedAgenda;
+    notifyListeners();
+  }
 
   Future<void> updateAgenda(Agenda agenda, BuildContext context) async{
 
@@ -135,7 +179,7 @@ class ConfiguracoesController extends ChangeNotifier{
     try{
       await _updateAgendaUsecase.call(agenda);
 
-      _agenda = agenda;
+      locallyUpdateAgenda(agenda);
 
       if(context.mounted){
         _mostrarFeedback(context, "Configurações salvas com sucesso! 💅", Colors.green);

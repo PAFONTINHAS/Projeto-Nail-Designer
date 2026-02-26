@@ -40,6 +40,11 @@ class ServicoController extends ChangeNotifier{
   Map<String, Servico> _servicos = {};
   Map<String, Servico> get servicos => _servicos;
 
+  List<Servico> get servicosList{
+
+    return _servicos.values.toList();
+  }
+
 
   Future<void> getServicos() async{
 

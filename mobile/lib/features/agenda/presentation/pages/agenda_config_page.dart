@@ -78,16 +78,23 @@ Widget build(BuildContext context) {
           
           const SizedBox(height: 30),
 
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFEC489A),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-              ),
-              onPressed: () async => await AgendaActionsHandler.handleUpdateAgenda(context),
-              child: const Text("SALVAR CONFIGURAÇÕES", style: TextStyle(color: Colors.white)),
-            ),
+          Selector<ConfiguracoesController, bool>(
+            selector: (_, controller)=> controller.haveAgendaChanged,
+            builder:(context, value, child) {
+
+             return SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: value ? const Color(0xFFEC489A) : Colors.grey,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  onPressed: () async => value ? await AgendaActionsHandler.handleUpdateAgenda(context) : {} ,
+                  child: const Text("SALVAR CONFIGURAÇÕES", style: TextStyle(color: Colors.white)),
+                ),
+              );
+
+            },
           ),
 
           const SizedBox(height: 40),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/services/notification_service.dart';
+import 'package:mobile/features/agendamento/presentation/controllers/agendamento_fields_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/home/presentation/pages/home_page.dart';
 import 'package:mobile/features/agenda/presentation/controllers/agenda_controller.dart';
@@ -34,6 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final agendamentoController = context.read<AgendamentoController>();
     final configuracoesController = context.read<ConfiguracoesController>();
     final relatorioFieldsController = context.read<RelatorioFieldsController>();
+    final agendamentoFieldsController = context.read<AgendamentoFieldsController>();
 
     await NotificationService().init();
 
@@ -44,8 +46,12 @@ class _SplashScreenState extends State<SplashScreen> {
       relatorioController.getRelatorios()
     ]);
 
-    await configuracoesController.fillAgenda();
-    await relatorioFieldsController.updateRelatorios(relatorioController.relatorios);
+    await Future.wait([
+      configuracoesController.fillAgenda(),
+      relatorioFieldsController.updateRelatorios(relatorioController.relatorios),
+    ]);
+
+    agendamentoFieldsController.setServicosDisponiveis(servicoController.servicosList);
 
     if(!mounted) return;
     
