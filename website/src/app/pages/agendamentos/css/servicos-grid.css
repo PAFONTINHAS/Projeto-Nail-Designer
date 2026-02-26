@@ -5,7 +5,17 @@
     margin-bottom: 20px;
 }
 
+.indisponivel{
+    user-select: none;
+    background-color: rgba(128, 128, 128, 0.199);
+}
 
+.textoIndisponivel{
+    
+    font-weight: bold;
+    color: black;
+    font-size: 0.6rem;
+}
 
 .lista-servicos{
     display: flex;

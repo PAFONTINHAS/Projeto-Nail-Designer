@@ -62,23 +62,46 @@
 
                             @for (servico of servicosDisponiveis; track $index) {
 
-                            <div class="card-servico" [class.selecionado]="isServicoSelecionado(servico.id)"
-                                (click)="toggleServico(servico)">
+                                <div class="card-servico" [class.selecionado]="isServicoSelecionado(servico.id)" (click)="toggleServico(servico)">
 
-                                <div class="info">
-                                    <div class="nome-servico">
-                                        <h4>{{servico.nome}}</h4>
+                                    <div class="info">
+                                        <div class="nome-servico">
+                                            <h4>{{servico.nome}}</h4>
+                                        </div>
+                                        <div class="info-servico">
+                                            <span><i-lucide [img]="Clock" class="relogio" color="black"
+                                                    [size]="11.2"></i-lucide> {{servico.duracao}} min</span>
+                                            <span>R$ {{servico.preco}},00</span>
+                                        </div>
                                     </div>
-                                    <div class="info-servico">
-                                        <span><i-lucide [img]="Clock" class="relogio" color="black"
-                                                [size]="11.2"></i-lucide> {{servico.duracao}} min</span>
-                                        <span>R$ {{servico.preco}},00</span>
-                                    </div>
+
+                                    <div class="checkbox-custom"></div>
+
                                 </div>
 
-                                <div class="checkbox-custom"></div>
+                            }
 
-                            </div>
+
+                            
+                            @for(servico of servicosIndisponiveis; track $index){
+
+                                <div class="card-servico indisponivel">
+
+                                    <div class="info">
+                                        <div class="nome-servico">
+                                            <h4>{{servico.nome}}</h4>
+                                        </div>
+                                        <div class="info-servico">
+                                            <span><i-lucide [img]="Clock" class="relogio" color="black"
+                                                    [size]="11.2"></i-lucide> {{servico.duracao}} min</span>
+                                            <span>R$ {{servico.preco}},00</span>
+                                        </div>
+                                        <span class="textoIndisponivel">SERVIÇO TEMPORARIAMENTE INDISPONÍVEL</span>
+                                    </div>
+
+                                    <div class="checkbox-custom"></div>
+
+                                </div>
 
                             }
                         </div>

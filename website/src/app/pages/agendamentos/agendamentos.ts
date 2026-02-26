@@ -1,16 +1,16 @@
-import { Component, LOCALE_ID, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
-import { LucideAngularModule, CircleAlert, Clock } from 'lucide-angular';
-import { Servico } from '../../shared/models/servico_model';
-import { CommonModule } from '@angular/common';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCardModule } from '@angular/material/card';
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
-import { AgendamentoService } from '../../shared/services/agendamento-service/agendamento-service';
-import { ServicosService } from '../../shared/services/servicos-service/servicos-service';
-import { NgxMaskDirective } from "ngx-mask";
-import { AgendaConfig } from '../../shared/models/agenda_config_model';
 import { Subscription } from 'rxjs';
+import { NgxMaskDirective } from "ngx-mask";
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { Servico } from '../../shared/models/servico_model';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { AgendaConfig } from '../../shared/models/agenda_config_model';
+import { LucideAngularModule, CircleAlert, Clock } from 'lucide-angular';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { ServicosService } from '../../shared/services/servicos-service/servicos-service';
+import { Component, LOCALE_ID, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { AgendamentoService } from '../../shared/services/agendamento-service/agendamento-service';
 
 @Component({
   selector: 'app-agendamentos',
@@ -42,6 +42,7 @@ export class Agendamentos implements OnInit, OnDestroy {
   ) {}
 
   private agendaSubscription!: Subscription;
+  private servicosSubscription!: Subscription;
 
   agendamentoSolicitado: boolean = false;
 
@@ -59,21 +60,34 @@ export class Agendamentos implements OnInit, OnDestroy {
   renderizarCalendario: boolean = true;
 
   async ngOnInit() {
-    this.servicos = (await this.servicosService.getServicos()) as Servico[];
+    // this.servicos = (await this.servicosService.getServicos()) as Servico[];
+
+    this.servicosSubscription = this.servicosService
+      .servicos$
+      .subscribe((remoteServicos) =>{
+
+        if(this.servicosSelecionados.length > 0 || this.dataSelecionada || this.horarioSelecionado){
+
+          this.forcarMudancas();
+        }
+        
+        this.servicos = remoteServicos as Servico[];
+      });
 
     this.agendaSubscription = this.agendamentoService
       .getAgenda()
       .subscribe((config) => {
         if (this.agendaConfig) {
-          this.notificarMudancaEResetar();
+          // this.notificarMudancaEResetar();
 
-          this.renderizarCalendario = false;
-          this.changeDetectorRef.detectChanges();
+          // this.renderizarCalendario = false;
+          // this.changeDetectorRef.detectChanges();
 
-          setTimeout(() => {
-            this.renderizarCalendario = true;
-            this.changeDetectorRef.detectChanges();
-          }, 10);
+          // setTimeout(() => {
+          //   this.renderizarCalendario = true;
+          //   this.changeDetectorRef.detectChanges();
+          // }, 10);
+          this.forcarMudancas();
         }
 
         this.agendaConfig = config;
@@ -83,6 +97,22 @@ export class Agendamentos implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges();
         console.log('Agenda atualizada em tempo real!');
       });
+  }
+
+  forcarMudancas(){
+
+    this.notificarMudancaEResetar();
+    this.renderizarCalendario = false;
+    this.changeDetectorRef.detectChanges();
+
+    setTimeout(() => {
+      this.renderizarCalendario = true;
+      this.changeDetectorRef.detectChanges();
+    }, 10);
+
+    this.limparCampos();
+    this.gerarHorarios();
+    this.changeDetectorRef.detectChanges();
   }
 
   notificarMudancaEResetar() {
@@ -104,6 +134,10 @@ export class Agendamentos implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.agendaSubscription) {
       this.agendaSubscription.unsubscribe();
+    }
+
+    if(this.servicosSubscription){
+      this.servicosSubscription.unsubscribe();
     }
   }
   gerarHorarios() {
@@ -158,6 +192,10 @@ export class Agendamentos implements OnInit, OnDestroy {
 
   get servicosDisponiveis() {
     return this.servicos.filter((s) => s.categoria == this.categoriaAtiva && s.servicoAtivo);
+  }
+
+  get servicosIndisponiveis(){
+    return this.servicos.filter((s) => s.categoria == this.categoriaAtiva && !s.servicoAtivo)
   }
 
   toggleServico(servico: Servico) {

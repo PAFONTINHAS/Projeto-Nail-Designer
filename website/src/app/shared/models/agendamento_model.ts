@@ -1,11 +1,11 @@
 import { Timestamp } from "rxjs";
 
 export interface Agendamento{
-    clienteNome: string;
     data: Date;
+    status: string;
     servicos: number[];
+    clienteNome: string;
     duracaoTotal: number;
     // finalizado: boolean;
     notificacaoEnviada: boolean;
-    status: string;
 }
