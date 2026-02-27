@@ -9,7 +9,6 @@ import 'package:mobile/features/relatorios/presentation/widgets/month_picker_wid
 import 'package:mobile/features/relatorios/presentation/widgets/chart_legend_widget.dart';
 import 'package:mobile/features/servico/presentation/controllers/servico_controller.dart';
 import 'package:mobile/features/relatorios/presentation/widgets/empty_report_state_widget.dart';
-import 'package:mobile/features/relatorios/presentation/widgets/previous_report_main_card_widget.dart';
 import 'package:mobile/features/relatorios/presentation/controllers/relatorio_fields_controller.dart';
 
 class RelatoriosPage extends StatelessWidget {
@@ -278,7 +277,7 @@ class PreviousMonthReport extends StatelessWidget {
     return Column(
       children: [
 
-        PreviousReportMainCardWidget(relatorio: relatorio),
+        MainCardWidget(relatorio: relatorio),
         const SizedBox(height: 25),
         const SizedBox(height: 25),
 
