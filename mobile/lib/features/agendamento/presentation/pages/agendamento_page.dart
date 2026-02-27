@@ -241,7 +241,7 @@ class AgendamentoCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<AgendamentoFieldsController>();
+    final controller = context.watch<AgendamentoFieldsController>();
     return Card(
       child: Column(
         children: [
@@ -257,7 +257,11 @@ class AgendamentoCalendar extends StatelessWidget {
           const Divider(height: 1),
 
           // Grade de Horários
-          Padding(
+
+          if(controller.isDayBlocked) Text("Dia bloqueado")
+          
+          
+          else Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -301,12 +305,14 @@ class AgendamentoCalendar extends StatelessWidget {
 
   Future<void> _selecionarData(BuildContext context, AgendamentoFieldsController controller) async{
 
-    await showDatePicker(
+    final date = await showDatePicker(
       context: context,
       initialDate: controller.dataSelecionada,
-      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      firstDate:   DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
+
+    if (date != null) controller.setDataSelecionada(date);
 
 
     

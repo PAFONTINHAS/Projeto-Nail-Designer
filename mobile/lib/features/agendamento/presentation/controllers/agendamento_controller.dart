@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mobile/features/agenda/domain/entities/agenda.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
 import 'package:mobile/features/agendamento/domain/usecases/atualizar_status_usecase.dart';
-import 'package:mobile/features/agendamento/domain/usecases/get_agendamentos_from_month_usecase.dart';
 import 'package:mobile/features/agendamento/domain/usecases/listen_agendamentos_usecase.dart';
+import 'package:mobile/features/agendamento/domain/usecases/get_agendamentos_from_month_usecase.dart';
 
 class AgendamentoController extends ChangeNotifier{
 
@@ -13,6 +14,7 @@ class AgendamentoController extends ChangeNotifier{
   final GetAgendamentosFromMonthUsecase _getAgendamentosFromMonthUsecase;
 
   AgendamentoController(this._listenAgendamentosUsecase, this._atualizarStatusUsecase, this._getAgendamentosFromMonthUsecase);
+
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -45,6 +47,7 @@ class AgendamentoController extends ChangeNotifier{
 
   void setDataVisualizada(DateTime novaData){
     _dataVisualizada = novaData;
+
     notifyListeners();
   }
 

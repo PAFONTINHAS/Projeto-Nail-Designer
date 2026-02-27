@@ -56,11 +56,21 @@ class ConfiguracoesController extends ChangeNotifier{
       return true;
     }
 
-    for(int i = 0; i < agenda!.diasTrabalho.length; i++){
-      if(_selecionados[i] != agenda!.diasTrabalho[i]){
-        return true;
-      }
-    }
+
+    // for(final dia in agenda!.diasTrabalho){
+    //   if(_selecionados.isNotEmpty && !_selecionados.contains(dia)){
+    //     return true;
+    //   }
+    // }
+
+    // for(int i = 0; i <= agenda!.diasTrabalho.length; i++){
+      
+    //   if(_selecionados.isEmpty) break;
+    //   logger.i("Dia selecionado: ${_selecionados[i]}");
+    //   if(_selecionados[i] != agenda!.diasTrabalho[i]){
+    //     return true;
+    //   }
+    // }
 
     if(_horarioInicio != agenda!.horarioInicio){
       return true;
@@ -80,7 +90,10 @@ class ConfiguracoesController extends ChangeNotifier{
   }
 
   void orderDiasSelecionados(){
-    _selecionados.sort((a, b) => a.bitLength.compareTo(b.bitLength));
+    
+    if(_selecionados.isEmpty) return;
+  
+    _selecionados.sort();
   }
   
   void setHorarioInicio (String novoHorario){

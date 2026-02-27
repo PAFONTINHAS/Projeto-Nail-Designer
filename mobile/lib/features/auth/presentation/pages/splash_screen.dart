@@ -51,6 +51,10 @@ class _SplashScreenState extends State<SplashScreen> {
       relatorioFieldsController.updateRelatorios(relatorioController.relatorios),
     ]);
 
+    if(configuracoesController.agenda != null){
+
+      agendamentoFieldsController.setAgenda(configuracoesController.agenda!);
+    }
     agendamentoFieldsController.setServicosDisponiveis(servicoController.servicosList);
 
     if(!mounted) return;

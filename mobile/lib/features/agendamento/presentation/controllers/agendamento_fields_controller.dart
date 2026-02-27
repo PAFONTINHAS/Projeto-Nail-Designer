@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/agenda/domain/entities/agenda.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/servico/domain/entities/servico.dart';
 
@@ -13,9 +14,12 @@ class AgendamentoFieldsController extends ChangeNotifier{
   DateTime _dataSelecionada = DateTime.now();
   DateTime get dataSelecionada => _dataSelecionada;
 
+
   String? _horarioSelecionado = "";
   String? get horarioSelecionado => _horarioSelecionado;
 
+  Agenda? _agenda;
+  Agenda? get agenda => _agenda;
 
   List<Servico> _servicosDisponiveis = [];
   List<Servico> get servicosDisponiveis {
@@ -25,6 +29,31 @@ class AgendamentoFieldsController extends ChangeNotifier{
         servico.categoria == _categoriaAtiva
       )
       .toList();
+  }
+
+  bool get isDayBlocked{
+
+    if(agenda == null) return true;
+
+    final dateString = "${_dataSelecionada.day.toString().padLeft(2, '0')}/${_dataSelecionada.month.toString().padLeft(2, '0')}/${_dataSelecionada.year}";
+
+    logger.i(dateString);
+
+    for(final blockedDay in agenda!.datasBloqueadas ){
+      if(dateString == blockedDay){
+        return true;
+      }
+    }
+
+    if(agenda!.diasTrabalho.contains(_dataSelecionada.weekday)){
+      return true;
+    }
+
+    if(_dataSelecionada.weekday == 7 && agenda!.diasTrabalho.contains(0)){
+      return true;
+    }
+
+    return false;
   }
 
   String _categoriaAtiva = "Alongamento";
@@ -41,6 +70,17 @@ class AgendamentoFieldsController extends ChangeNotifier{
   List<Servico> _selecionados = [];
   List<Servico> get selecionados => _selecionados;
   
+
+  void setDataSelecionada(DateTime novaData){
+    _dataSelecionada = novaData;
+
+    notifyListeners();
+  }
+
+  void setAgenda(Agenda agenda){
+    _agenda = agenda;
+  }
+
 
   void setCategoriaAtiva(String categoria){
 
