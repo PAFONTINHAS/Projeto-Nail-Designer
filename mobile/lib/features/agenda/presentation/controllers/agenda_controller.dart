@@ -50,43 +50,27 @@ class ConfiguracoesController extends ChangeNotifier{
 
   bool verifyAgendaChanges(){
 
-    if (agenda == null) return true;
+    if (agenda == null) return false;
 
-    if(_agendaAtiva != agenda!.agendaAtiva){
-      return true;
-    }
+    if(_horarioFim != agenda!.horarioFim) return true;
+    if(_agendaAtiva != agenda!.agendaAtiva) return true;
+    if(_horarioInicio != agenda!.horarioInicio) return true;
 
-
-    // for(final dia in agenda!.diasTrabalho){
-    //   if(_selecionados.isNotEmpty && !_selecionados.contains(dia)){
-    //     return true;
-    //   }
-    // }
-
-    // for(int i = 0; i <= agenda!.diasTrabalho.length; i++){
-      
-    //   if(_selecionados.isEmpty) break;
-    //   logger.i("Dia selecionado: ${_selecionados[i]}");
-    //   if(_selecionados[i] != agenda!.diasTrabalho[i]){
-    //     return true;
-    //   }
-    // }
-
-    if(_horarioInicio != agenda!.horarioInicio){
-      return true;
-    }
-
-    if(_horarioFim != agenda!.horarioFim){
-      return true;
-    }
-
-    for(int i = 0; i < agenda!.datasBloqueadas.length; i++){
-      if(_datasBloqueadas[i] != agenda!.datasBloqueadas[i]){
-        return true;
-      }
-    }
+    
+    if(!_listEquals(_selecionados, agenda!.diasTrabalho)) return true;
+    if(!_listEquals(_datasBloqueadas, agenda!.datasBloqueadas)) return true;
 
     return false;
+  }
+
+  bool _listEquals(List a, List b){
+    if(a.length != b.length) return false;
+
+    for(int i = 0; i<a.length; i++){
+      if(a[i] != b[i]) return false;
+    }
+
+    return true;
   }
 
   void orderDiasSelecionados(){
