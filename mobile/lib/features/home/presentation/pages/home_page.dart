@@ -24,6 +24,8 @@ class HomePage extends StatelessWidget {
 Widget build(BuildContext context) {
   final controller = context.watch<AgendamentoController>();
   final String dataVisualizada = "${controller.dataVisualizada.day.toString().padLeft(2, '0')}/${controller.dataVisualizada.month.toString().padLeft(2, '0')}";
+
+  logger.i("Agendamentos atrasados: ${controller.agendamentosAtrasados}");
   return SafeArea(
     top: false,
     left: false,
@@ -132,8 +134,11 @@ Widget build(BuildContext context) {
                   ],
                 ),
 
+              
+                const SizedBox(height: 30),
 
                 if (controller.agendamentosAtrasados.isNotEmpty)
+
                   GestureDetector(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AgendamentosAtrasadosPage())), // Leva para a lista filtrada
                     child: Container(
@@ -157,6 +162,7 @@ Widget build(BuildContext context) {
                       ),
                     ),
                   ),
+                  
                   const SizedBox(height: 30),
 
 

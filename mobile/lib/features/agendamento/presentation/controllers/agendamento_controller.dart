@@ -44,6 +44,7 @@ class AgendamentoController extends ChangeNotifier{
   }
 
   List<AgendamentoEntity> get agendamentosAtrasados {
+
     final agora = DateTime.now();
 
     return agendamentos

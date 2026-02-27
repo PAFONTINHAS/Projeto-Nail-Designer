@@ -43,3 +43,7 @@ environments
 # System files
 .DS_Store
 Thumbs.db
+
+firebase.json
+firestore.*
+.firebaserc
