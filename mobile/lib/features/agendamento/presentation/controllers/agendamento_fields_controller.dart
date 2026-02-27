@@ -186,6 +186,24 @@ class AgendamentoFieldsController extends ChangeNotifier{
 
   }
 
+  void clearForm(){
+
+    _horarioSelecionado = null;
+    _dataSelecionada = DateTime.now();
+    _selecionados = [];
+    phoneController.text = "";
+    nameController.text = "";
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    nameController.dispose();
+    phoneController.dispose();
+  }
+
   void mostrarFeedback(BuildContext context, String mensagem, Color cor) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -228,16 +246,30 @@ class AgendamentoFieldsController extends ChangeNotifier{
     notifyListeners();
   }
   
-  void addServico(Servico servico){
+  void addServico(Servico servico,BuildContext context){
     
     _selecionados = List.from(_selecionados)..add(servico);
-    
+    _validarHorarioAposMudanca(context); 
     notifyListeners();
   }
 
-  void removeServico(Servico servico){
+  void removeServico(Servico servico,BuildContext context){
     _selecionados = List.from(_selecionados)..remove(servico);
+    _validarHorarioAposMudanca(context); 
     notifyListeners();
+  }
+
+  void _validarHorarioAposMudanca(BuildContext context){
+
+    if(_horarioSelecionado == null) return;
+
+    int momentoInicio = convertStringToTime(_horarioSelecionado!);
+    int limiteFim = agenda != null ? convertStringToTime(agenda!.horarioFim) : 1440;  
+
+    if(!_verificarSeCabe(momentoInicio, tempoTotal, _agendamentosDoDia, limiteFim)){
+      _horarioSelecionado = null;
+      mostrarFeedback(context, "O horário selecionado não comporta a nova duração.", Colors.orange);
+    }
   }
 
   void setName(String name){
@@ -254,6 +286,8 @@ class AgendamentoFieldsController extends ChangeNotifier{
     _horarioSelecionado = horario;
     notifyListeners();
   }
+
+
 
   List<String> get horariosVagos{
     return ["08:00", "08:30", "09:00", "10:30", "14:00", "15:30"];

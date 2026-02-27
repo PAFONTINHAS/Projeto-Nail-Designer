@@ -33,6 +33,8 @@ class HandleCreateAgendamento {
       agendamentoFieldsController.mostrarFeedback(context, "Agendamento criado com sucesso!", Colors.green);
     }
 
+    agendamentoFieldsController.clearForm();
+
     Navigator.of(context).pop();
 
 

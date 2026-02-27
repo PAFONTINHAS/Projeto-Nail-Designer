@@ -21,8 +21,8 @@ class AgendamentoModel extends AgendamentoEntity {
     return AgendamentoModel(
       id: doc.id,
       status            : data['status'] ?? '',
-      contatoCliente    : data['contato'] ?? '',
-      nomeCliente       : data['clienteNome'] ?? '',
+      contatoCliente    : data['contatoCliente'] ?? '',
+      nomeCliente       : data['nomeCliente'] ?? '',
       duracaoTotal      : data['duracaoTotal'] ?? 0,
       notificacaoEnviada: data['notificacaoEnviada'] ?? false,
       data              : (data['data'] as Timestamp).toDate(),

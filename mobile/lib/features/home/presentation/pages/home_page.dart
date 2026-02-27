@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/agenda/presentation/controllers/agenda_controller.dart';
+import 'package:mobile/features/agendamento/presentation/controllers/agendamento_fields_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
 import 'package:mobile/features/home/presentation/widgets/empty_list_widget.dart';
@@ -30,7 +32,20 @@ Widget build(BuildContext context) {
 
     backgroundColor: const Color(0xFFF8F9FA),
     floatingActionButton: FloatingActionButton.extended(
-      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AgendamentoPage())),
+      onPressed: () {
+        final agendamentoController=  context.read<AgendamentoController>();
+        final agendaController = context.read<ConfiguracoesController>();
+        final agendamentoFieldsController = context.read<AgendamentoFieldsController>();
+
+        agendamentoFieldsController.setAgendamentosDoDia(agendamentoController.agendamentos);
+
+        if(agendaController.agenda != null){
+
+          agendamentoFieldsController.setAgenda(agendaController.agenda!);
+        }
+        
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const AgendamentoPage()));
+      } ,
       backgroundColor: const Color(0xFFEC489A), // O pink do Studio
       icon: const Icon(Icons.add_task, color: Colors.white),
       label: const Text("Novo Agendamento", style: TextStyle(color: Colors.white)),

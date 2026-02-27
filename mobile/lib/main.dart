@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile/core/services/in_app_alert_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/core/app/app_initializer.dart';
@@ -11,6 +12,8 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppInitializer.conectToFirebase();
+
+  await initializeDateFormatting("pt_BR", null);
 
   final DependencyInjection dependencyInjection = DependencyInjection();
 

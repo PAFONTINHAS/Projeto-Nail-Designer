@@ -249,19 +249,19 @@ export class Agendamentos implements OnInit, OnDestroy {
     const [horas, minutos] = this.horarioSelecionado.split(':').map(Number);
     dataFinal.setHours(horas, minutos);
 
-    const novoAgendamento = {
+    const novoAgendamento : Agendamento = {
       data: dataFinal, // O SDK do Firebase converterá automaticamente para Timestamp
-      servicos: this.servicosSelecionados.map((s) => s.id),
-      duracaoTotal: this.totalDuracao,
-      valorTotal: this.totalPreco,
-      clienteNome: nome,
-      contato: contato, 
+      nomeCliente: nome,
       status: 'agendado',
-      notificacaoEnviada: false
+      contatoCliente: contato, 
+      notificacaoEnviada: false,
+      valorTotal: this.totalPreco,
+      duracaoTotal: this.totalDuracao,
+      servicos: this.servicosSelecionados.map((s) => s.id),
     };
 
     try {
-      await this.agendamentoService.salvarAgendamento(novoAgendamento as any);
+      await this.agendamentoService.salvarAgendamento(novoAgendamento as Agendamento);
       alert('Agendamento realizado com sucesso!');
       this.limparCampos();
     } catch (error) {
