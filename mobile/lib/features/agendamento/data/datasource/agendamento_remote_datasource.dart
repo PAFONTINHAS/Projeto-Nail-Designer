@@ -4,6 +4,8 @@ abstract class AgendamentoRemoteDatasource {
 
   Stream<List<AgendamentoEntity>> listenAgendamentos();
   Future<void> atualizarStatus(String id, String status);
+  Future<void> createAgendamento(AgendamentoEntity agendamento);
   Future<List<AgendamentoEntity>> getAgendamentosFromMonth(int year, int month);
   
+
 }

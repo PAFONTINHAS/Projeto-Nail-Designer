@@ -23,3 +23,22 @@ double tranformIntoOneDecimal(double value){
 
   return double.parse(formatedValue);
 }
+
+int convertStringToTime(String timeString){ 
+
+  final pieces = timeString.split(":");
+  final hour = int.parse(pieces[0]);
+  final minute = int.parse(pieces[1]);
+
+  return (hour * 60) + minute;
+
+}
+
+String formatMinutes(int totalMinutes){
+  
+  final int hours = totalMinutes ~/ 60;
+  final int minutes = totalMinutes % 60;
+
+  return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
+
+}

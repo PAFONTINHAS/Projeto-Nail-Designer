@@ -5,4 +5,7 @@ abstract class AgendamentoRepository {
   Stream<List<AgendamentoEntity>> listenAgendamentos();
   Future<void> atualizarStatus(String id, String status);
   Future<List<AgendamentoEntity>> getAgendamentosFromMonth(int year, int month);
+  Future<void> createAgendamento(AgendamentoEntity agendamento);
+
+
 }

@@ -24,6 +24,12 @@ class AgendamentoRepositoryImpl implements AgendamentoRepository{
     return await remoteDatasource.getAgendamentosFromMonth(year, month);
   }
 
+  @override
+  Future<void> createAgendamento(AgendamentoEntity agendamento) async{
+    return await remoteDatasource.createAgendamento(agendamento);
+  }
+
+
 
   
 } 

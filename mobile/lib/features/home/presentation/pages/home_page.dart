@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/agendamento/presentation/pages/agendamento_page.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/features/servico/presentation/pages/servicos_page.dart';
 import 'package:mobile/features/home/presentation/widgets/empty_list_widget.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
 import 'package:mobile/features/relatorios/presentation/pages/relatorios_page.dart';
+import 'package:mobile/features/agendamento/presentation/pages/agendamento_page.dart';
 import 'package:mobile/features/home/presentation/widgets/agendamento_card_widget.dart';
 import 'package:mobile/features/servico/presentation/controllers/servico_controller.dart';
 import 'package:mobile/features/home/presentation/pages/agendamentos_atrasados_page.dart';

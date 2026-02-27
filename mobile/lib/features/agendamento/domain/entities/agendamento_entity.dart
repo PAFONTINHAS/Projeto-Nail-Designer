@@ -28,7 +28,7 @@ class AgendamentoEntity {
 
     return {
 
-      "id": id,
+      //"id": id,
       "data": data,
       "status": status,
       "servicos": servicos,

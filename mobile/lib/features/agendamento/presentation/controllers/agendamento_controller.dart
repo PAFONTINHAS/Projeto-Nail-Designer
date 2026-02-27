@@ -4,6 +4,7 @@ import 'package:mobile/features/agenda/domain/entities/agenda.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
 import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
 import 'package:mobile/features/agendamento/domain/usecases/atualizar_status_usecase.dart';
+import 'package:mobile/features/agendamento/domain/usecases/create_agendamento_usecase.dart';
 import 'package:mobile/features/agendamento/domain/usecases/listen_agendamentos_usecase.dart';
 import 'package:mobile/features/agendamento/domain/usecases/get_agendamentos_from_month_usecase.dart';
 
@@ -12,8 +13,14 @@ class AgendamentoController extends ChangeNotifier{
   final AtualizarStatusUsecase _atualizarStatusUsecase;
   final ListenAgendamentosUsecase _listenAgendamentosUsecase;
   final GetAgendamentosFromMonthUsecase _getAgendamentosFromMonthUsecase;
+  final CreateAgendamentoUsecase _createAgendamentoUsecase;
 
-  AgendamentoController(this._listenAgendamentosUsecase, this._atualizarStatusUsecase, this._getAgendamentosFromMonthUsecase);
+  AgendamentoController(
+    this._listenAgendamentosUsecase,
+    this._atualizarStatusUsecase,
+    this._getAgendamentosFromMonthUsecase,
+    this._createAgendamentoUsecase,
+  );
 
 
   bool _isLoading = false;
@@ -27,8 +34,11 @@ class AgendamentoController extends ChangeNotifier{
   DateTime _dataVisualizada = DateTime.now();
   DateTime get dataVisualizada => _dataVisualizada;
 
+  Map<String, List<AgendamentoEntity>> _agendamentosPorDia = {};
+  Map<String, List<AgendamentoEntity>> get agendamentosPorDia => _agendamentosPorDia;
+
   List<AgendamentoEntity> get agendamentosDataSelecionada{
-    final String dateKey = _formatDateKey(_dataVisualizada);
+    final String dateKey = formatDateKey(_dataVisualizada);
     final lista = _agendamentosPorDia[dateKey] ?? [];
     return lista.where((a) => a.status == 'agendado').toList();
   }
@@ -51,11 +61,11 @@ class AgendamentoController extends ChangeNotifier{
     notifyListeners();
   }
 
-  String _formatDateKey(DateTime data) => "${data.day}/${data.month}/${data.year}";
+  String formatDateKey(DateTime data) => "${data.day}/${data.month}/${data.year}";
 
   List<AgendamentoEntity> get agendamentosDoDia{
 
-    final today = _formatDateKey(DateTime.now());
+    final today = formatDateKey(DateTime.now());
 
     final List<AgendamentoEntity>? agendamentosDoDia = _agendamentosPorDia[today];
 
@@ -68,7 +78,6 @@ class AgendamentoController extends ChangeNotifier{
     return _agendamentosPorDia.values.expand((agendamento) => agendamento).toList();
   }
   
-  Map<String, List<AgendamentoEntity>> _agendamentosPorDia = {};
   
 
   Future<void> listenAgendamentos() async{
@@ -86,7 +95,7 @@ class AgendamentoController extends ChangeNotifier{
         
         for (final agendamento in agendamentos) {
 
-          final agendamentoData = _formatDateKey(agendamento.data);
+          final agendamentoData = formatDateKey(agendamento.data);
 
           novoMap.putIfAbsent(agendamentoData, () => []).add(agendamento);
         }
@@ -132,6 +141,21 @@ class AgendamentoController extends ChangeNotifier{
     try {
       await _atualizarStatusUsecase.call(id, status);
       
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> createAgendamento(AgendamentoEntity agendamento) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _createAgendamentoUsecase.call(agendamento);
     } catch (e) {
       _errorMessage = e.toString();
     } finally {

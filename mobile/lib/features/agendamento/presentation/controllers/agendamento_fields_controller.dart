@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/utils/helpers.dart';
 import 'package:mobile/features/agenda/domain/entities/agenda.dart';
 import 'package:mobile/features/agenda/presentation/pages/agenda_config_page.dart';
+import 'package:mobile/features/agendamento/domain/entities/agendamento_entity.dart';
+import 'package:mobile/features/agendamento/domain/entities/horario_slot.dart';
 import 'package:mobile/features/servico/domain/entities/servico.dart';
 
 class AgendamentoFieldsController extends ChangeNotifier{
@@ -14,8 +17,11 @@ class AgendamentoFieldsController extends ChangeNotifier{
   DateTime _dataSelecionada = DateTime.now();
   DateTime get dataSelecionada => _dataSelecionada;
 
+  List<AgendamentoEntity> _agendamentosDoDia = [];
+  List<AgendamentoEntity> get agendamentosDoDia => _agendamentosDoDia;
 
-  String? _horarioSelecionado = "";
+
+  String? _horarioSelecionado;
   String? get horarioSelecionado => _horarioSelecionado;
 
   Agenda? _agenda;
@@ -32,12 +38,10 @@ class AgendamentoFieldsController extends ChangeNotifier{
   }
 
   bool get isDayBlocked{
-
+    
     if(agenda == null) return true;
 
-    final dateString = "${_dataSelecionada.day.toString().padLeft(2, '0')}/${_dataSelecionada.month.toString().padLeft(2, '0')}/${_dataSelecionada.year}";
-
-    logger.i(dateString);
+    final dateString = "${_dataSelecionada.year}-${_dataSelecionada.month.toString().padLeft(2, '0')}-${_dataSelecionada.day.toString().padLeft(2, '0')}";
 
     for(final blockedDay in agenda!.datasBloqueadas ){
       if(dateString == blockedDay){
@@ -45,11 +49,12 @@ class AgendamentoFieldsController extends ChangeNotifier{
       }
     }
 
-    if(agenda!.diasTrabalho.contains(_dataSelecionada.weekday)){
+    if(_dataSelecionada.weekday != 7 && !agenda!.diasTrabalho.contains(_dataSelecionada.weekday)){
       return true;
     }
 
-    if(_dataSelecionada.weekday == 7 && agenda!.diasTrabalho.contains(0)){
+    if(_dataSelecionada.weekday == 7 && !agenda!.diasTrabalho.contains(0)){
+
       return true;
     }
 
@@ -69,10 +74,139 @@ class AgendamentoFieldsController extends ChangeNotifier{
 
   List<Servico> _selecionados = [];
   List<Servico> get selecionados => _selecionados;
-  
+
+  List<HorarioSlot> get gerarGradeHorarios{
+    if(agenda == null) return [];
+
+    List<HorarioSlot> slots = [];
+
+    final int inicio = convertStringToTime(agenda!.horarioInicio);
+    final int fim = convertStringToTime(agenda!.horarioFim);
+    final int duracao = tempoTotal;
+
+    for(int minutes = inicio; minutes < fim; minutes += 60){
+      String horaFormatada = formatMinutes(minutes);
+
+      bool estaOcupado = _verificarConflito(minutes, agendamentosDoDia);
+
+      bool cabeDuracao = _verificarSeCabe(minutes, duracao, agendamentosDoDia, fim);
+
+      slots.add(HorarioSlot(hora: horaFormatada, ocupado: estaOcupado, disponivelPelaDuracao: cabeDuracao));
+    }
+
+    return slots;
+
+  }
+
+  bool _verificarConflito(int minutos, List<AgendamentoEntity> agendamentosDoDia){
+    
+    return agendamentosDoDia.any((agendamento){
+      final dataAgendamento = agendamento.data;
+
+      int inicioOcupado = (dataAgendamento.hour * 60) + dataAgendamento.minute;
+      int fimOcupado = inicioOcupado + agendamento.duracaoTotal;
+
+      return minutos >= inicioOcupado && minutos < fimOcupado;
+     
+    });
+
+  }
+
+  bool _verificarSeCabe(int momentoInicio, int duracaoNecessaria, List<AgendamentoEntity> agendamentosOcupados, int limiteFechamento) {
+    int momentoFimProposto = momentoInicio + duracaoNecessaria;
+
+    // 1. Verifica se ultrapassa o horário de fechar o Studio
+    if (momentoFimProposto > limiteFechamento) return false;
+
+    // 2. Verifica se algum agendamento existente começa antes de terminarmos o atual
+    return !agendamentosOcupados.any((agendamento) {
+      DateTime dataAgendada = agendamento.data;
+      int inicioOcupado = (dataAgendada.hour * 60) + dataAgendada.minute;
+      int fimOcupado = inicioOcupado + agendamento.duracaoTotal;
+
+      // Existe conflito se o nosso atendimento proposto "atropelar" um que já existe
+      bool sobrepoeInicio = momentoInicio < fimOcupado && momentoFimProposto > inicioOcupado;
+      
+      return sobrepoeInicio;
+    });
+  }
+
+  // Retorna o minuto final do agendamento baseado no horário selecionado
+  int? get minutoFinalSelecionado {
+    if (horarioSelecionado == null) return null;
+    int inicio = convertStringToTime(horarioSelecionado!);
+    return inicio + tempoTotal;
+  }
+
+  // Verifica se um slot específico faz parte do tempo do serviço selecionado
+  bool isNoIntervalo(String horaSlot) {
+    if (horarioSelecionado == null) return false;
+
+    int inicio = convertStringToTime(horarioSelecionado!);
+    int fim = minutoFinalSelecionado!;
+    int atual = convertStringToTime(horaSlot);
+
+    return atual >= inicio && atual < fim;
+  }
+
+
+  AgendamentoEntity? buildNewAgendamento(BuildContext context){
+
+    if (horarioSelecionado == null) {
+      mostrarFeedback(context, "Selecione um horário", Colors.red);
+      return null;
+    }
+
+    final splitedHorario = horarioSelecionado!.split(":");
+
+    final int hora = int.parse(splitedHorario[0]);
+    final int minuto = int.parse(splitedHorario[1]);
+
+    logger.i("$hora:$minuto");
+
+    final finalDate = DateTime(_dataSelecionada.year, _dataSelecionada.month, _dataSelecionada.day, hora, minuto);
+
+    logger.i("data final: $finalDate");
+
+    final List<String> servicos = _selecionados.map((servico){
+      return servico.id;
+    }).toList(); 
+
+    return AgendamentoEntity(
+      id: "",
+      data: finalDate,
+      status: "agendado",
+      servicos: servicos,
+      valorTotal: valorTotal,
+      nomeCliente: nameController.text.trim(),
+      duracaoTotal: tempoTotal,
+      contatoCliente: phoneController.text,
+      notificacaoEnviada: false,
+    );
+
+  }
+
+  void mostrarFeedback(BuildContext context, String mensagem, Color cor) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensagem, style: const TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: cor,
+        behavior: SnackBarBehavior.floating, // Dá um ar mais moderno/mobile
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   void setDataSelecionada(DateTime novaData){
     _dataSelecionada = novaData;
+
+    notifyListeners();
+  }
+
+  void setAgendamentosDoDia(List<AgendamentoEntity> agendamentos){
+    _agendamentosDoDia = agendamentos;
+
+    logger.i("Agendamentos: ${agendamentos.length}");
 
     notifyListeners();
   }

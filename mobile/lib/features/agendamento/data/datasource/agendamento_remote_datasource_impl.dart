@@ -64,5 +64,17 @@ class AgendamentoRemoteDatasourceImpl implements AgendamentoRemoteDatasource{
       Logger().e("Erro ao atualizar status: $e");
     }
   }
+
+
+  @override
+  Future<void> createAgendamento(AgendamentoEntity agendamento) async{
+    try{
+      final ref = _firestore.collection('agendamentos').doc();
+
+      await ref.set(agendamento.toMap());
+    }catch(e){
+      Logger().e("Erro ao criar agendamento: $e");
+    }
+  }
   
 }

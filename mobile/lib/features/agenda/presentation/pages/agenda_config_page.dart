@@ -89,7 +89,7 @@ Widget build(BuildContext context) {
                     backgroundColor: value ? const Color(0xFFEC489A) : Colors.grey,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  onPressed: () async => value ? await AgendaActionsHandler.handleUpdateAgenda(context) : {} ,
+                  onPressed: () async => value ? await AgendaActionsHandler.handleUpdateAgenda(context) :  await AgendaActionsHandler.handleUpdateAgenda(context) ,
                   child: const Text("SALVAR CONFIGURAÇÕES", style: TextStyle(color: Colors.white)),
                 ),
               );
